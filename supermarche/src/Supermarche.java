@@ -60,7 +60,7 @@ public class Supermarche {
         // création des rayons
         List<Rayon> rayons = new ArrayList<Rayon>();
         for (int i = 0; i < listeProduits.length ; i ++ ) {
-            rayons.add(new Rayon(listeProduits[i], RAYON_STOCK_MAX, RAYON_STOCK_INIT));
+            rayons.add(new Rayon(i,listeProduits[i], RAYON_STOCK_MAX, RAYON_STOCK_INIT));
         }
 
         // création des clients
@@ -77,7 +77,7 @@ public class Supermarche {
             // la bibliothèque s'appelle Faker
             Faker faker = new Faker();
             String nom = faker.name().fullName();
-            listeClients.add(new Client(nom, listeDeCourses, rayons, TPS_PARCOURS_RAYONS, chariot));
+            listeClients.add(new Client(i,nom, listeDeCourses, rayons, TPS_PARCOURS_RAYONS, chariot));
         }
 
         //création du chef de rayon
