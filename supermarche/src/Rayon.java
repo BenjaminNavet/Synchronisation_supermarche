@@ -15,11 +15,6 @@ public class Rayon {
      */
     private String nom;
 
-    /**
-     * Le chef de rayon
-     */
-    private ChefRayon chefRayon;
-
     public Rayon(String nom, int stockMax, int stock){
         this.nom=nom;
         this.stockMax=stockMax;
@@ -46,7 +41,7 @@ public class Rayon {
             }
         }
         stock --;
-        notifyAll();
+        notify();
     }
 
     /**
@@ -61,7 +56,7 @@ public class Rayon {
             this.stock++;
         }
 
-        notifyAll(); // pour prévenir les clients qui attendent de prendre un article
+        notify(); // pour prévenir les clients qui attendent de prendre un article
         System.out.println("Le chef de rayon a équilibré le rayon "+ getName() +".");
         return chefRayon.getStock(getName())-nbAddArticle;
     }
