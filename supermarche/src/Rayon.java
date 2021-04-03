@@ -49,7 +49,7 @@ public class Rayon {
      * Le client prend un produit dans le rayon
      */
     public synchronized void takeProduct(){
-        while(stock<1 && !ChefRayonSurPlace){
+        while(stock==0 || ChefRayonSurPlace){
             try {
                 wait();
             } catch (InterruptedException e) {
