@@ -16,9 +16,11 @@ public class Rayon {
     private String nom;
 
     /**
-     * Le chef de rayon
+     * chef de rayon sur place
      */
-    private ChefRayon chefRayon;
+    private volatile boolean ChefRayonSurPlace = false;
+
+
 
     public Rayon(String nom, int stockMax, int stock){
         this.nom=nom;
@@ -35,10 +37,19 @@ public class Rayon {
 
 
     /**
+     * modifie la valeur du booléen chefRayonSurPlace
+     * @param chefRayonSurPlace
+     */
+    public void setChefRayonSurPlace(boolean chefRayonSurPlace) {
+        ChefRayonSurPlace = chefRayonSurPlace;
+    }
+
+
+    /**
      * Le client prend un produit dans le rayon
      */
     public synchronized void takeProduct(){
-        while(stock<1){
+        while(stock<1 && !ChefRayonSurPlace){
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -46,7 +57,7 @@ public class Rayon {
             }
         }
         stock --;
-        notifyAll();
+        notify();
     }
 
     /**
@@ -61,7 +72,9 @@ public class Rayon {
             this.stock++;
         }
 
-        notifyAll(); // pour prévenir les clients qui attendent de prendre un article
+        setChefRayonSurPlace(false);
+
+        notify(); // pour prévenir les clients qui attendent de prendre un article
         System.out.println("Le chef de rayon a équilibré le rayon "+ getName() +".");
         return chefRayon.getStock(getName())-nbAddArticle;
     }
