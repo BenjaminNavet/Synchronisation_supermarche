@@ -16,13 +16,19 @@ public class Rayon {
     private String nom;
 
     /**
+     * L'index du rayon
+     */
+    private int index;
+
+    /**
      * chef de rayon sur place
      */
     private volatile boolean ChefRayonSurPlace = false;
 
 
 
-    public Rayon(String nom, int stockMax, int stock){
+    public Rayon(int index, String nom, int stockMax, int stock){
+        this.index=index;
         this.nom=nom;
         this.stockMax=stockMax;
         this.stock=stock;
@@ -35,6 +41,12 @@ public class Rayon {
         return this.nom;
     }
 
+    /**
+     * Retourne l'index du rayon
+     */
+    public int getIndex() {
+        return this.index;
+    }
 
     /**
      * modifie la valeur du booléen chefRayonSurPlace
