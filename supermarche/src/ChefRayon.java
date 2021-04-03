@@ -46,7 +46,7 @@ public class ChefRayon {
 
         while (true) {
 
-            // Le chef de Rayon reprend 5 articles pour chaque produit
+            // Le chef de Rayon reprend 5 articles pour chaque type de produit
             recharge();
             // Le chef de Rayon va au premier rayon
             changeDeRayon();
