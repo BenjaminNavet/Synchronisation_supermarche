@@ -1,4 +1,3 @@
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,15 +9,15 @@ public class Client extends Thread{
     Map<String, Integer> listeCourses;
     List<Rayon> rayons;
     int tpsParcoursRayons;
-    Chariots chariot;
+    Chariot chariot;
 
 
 
-    public Client(String nom, Map<String, Integer> listeCourses, List<Rayon> rayons, int tpsParcoursRayons, Chariots chariot) {
+    public Client(String nom, Map<String, Integer> listeCourses, List<Rayon> rayons, int tpsParcoursRayons, Chariot chariot) {
         this.nom = nom;
         this.listeCourses = listeCourses;
         this.rayons = rayons;
-        this.tpsParcoursRayons    =  tpsParcoursRayons;
+        this.tpsParcoursRayons = tpsParcoursRayons;
         this.chariot = chariot;
     }
 
@@ -37,18 +36,24 @@ public class Client extends Thread{
     public void run() {
 
         chariot.prendreChariot();
-        changeDeRayon();
 
-            for (int i = 0; i < rayons.size(); i++) {
-                Rayon rayon = rayons.get(i);
+        // 'autres temps sont négligés' ??
+        // changeDeRayon();
 
-                int quantiteVoulue = listeCourses.get(rayon.getName());
-                for (int j = 0; j < quantiteVoulue; j++) {
-                    rayon.takeProduct(this, rayon);
-                }
+        for (int i = 0; i < rayons.size(); i++) {
+            Rayon rayon = rayons.get(i);
 
-                changeDeRayon();
+            int quantiteVoulue = listeCourses.get(rayon.getName());
+            for (int j = 0; j < quantiteVoulue; j++) {
+                rayon.takeProduct(this, rayon);
             }
+
+            changeDeRayon();
+        }
+
+
+        chariot.rendreChariot();
+
 
     }
 
