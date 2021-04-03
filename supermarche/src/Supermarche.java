@@ -55,7 +55,7 @@ public class Supermarche {
         List<Client> listeClients = new ArrayList<>();
 
         //création du chariot
-        Chariots chariot = new Chariots(NB_CHARIOTS);
+        Chariot chariot = new Chariot(NB_CHARIOTS);
 
         // création des rayons
         List<Rayon> rayons = new ArrayList<Rayon>();
