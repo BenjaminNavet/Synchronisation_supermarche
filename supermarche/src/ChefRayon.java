@@ -21,7 +21,6 @@ public class ChefRayon extends Thread{
         this.maxChgtParProduit    =  maxChgtParProduit;
     }
 
-
     public int getStock(String name) {
         return chargement.get(name);
     }
@@ -30,11 +29,11 @@ public class ChefRayon extends Thread{
         for (int i = 0; i < rayons.size(); i++) {
             Rayon rayon = rayons.get(i);
             this.chargement.put(rayon.getName(), maxChgtParProduit);
-            try {
-                sleep(tpsParcoursEntrepot);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        }
+        try {
+            sleep(tpsParcoursEntrepot);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -59,7 +58,7 @@ public class ChefRayon extends Thread{
                 Rayon rayon = rayons.get(i);
                 rayon.setChefRayonSurPlace(true);
                 int nombreDeProduitsDecharges = rayon.equilibrage(this);
-                this.chargement.put(rayon.getName(), chargement.get(rayon.getName())- nombreDeProduitsDecharges);
+                this.chargement.put(rayon.getName(), chargement.get(rayon.getName()) - nombreDeProduitsDecharges);
                 changeDeRayon();
             }
 
