@@ -1,8 +1,8 @@
-public class Chariot {
+public class Chariots {
 
     private int nbChariots;
 
-    public Chariot(int nbChariots){
+    public Chariots(int nbChariots){
         this.nbChariots=nbChariots;
     }
 

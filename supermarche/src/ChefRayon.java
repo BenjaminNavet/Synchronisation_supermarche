@@ -4,17 +4,21 @@ import java.util.Map;
 
 import static java.lang.Thread.sleep;
 
-public class ChefRayon {
+public class ChefRayon extends Thread{
 
     Map<String, Integer> chargement = new HashMap();
     List<Rayon> rayons;
+    int tpsParcoursRayons, tpsParcoursEntrepot, maxChgtParProduit;
 
-    public ChefRayon(List<Rayon> rayons) {
+    public ChefRayon(List<Rayon> rayons, int tpsParcoursRayons, int tpsParcoursEntrepot, int maxChgtParProduit) {
 
         this.rayons = rayons;
         for (Rayon rayon : rayons) {
             chargement.put(rayon.getName(), 0);
         }
+        this.tpsParcoursRayons    =  tpsParcoursRayons;
+        this.tpsParcoursEntrepot  =  tpsParcoursEntrepot;
+        this.maxChgtParProduit    =  maxChgtParProduit;
     }
 
 
@@ -25,9 +29,9 @@ public class ChefRayon {
     public void recharge(){
         for (int i = 0; i < rayons.size(); i++) {
             Rayon rayon = rayons.get(i);
-            this.chargement.put(rayon.getName(), 5);
+            this.chargement.put(rayon.getName(), maxChgtParProduit);
             try {
-                sleep(500);
+                sleep(tpsParcoursEntrepot);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -36,7 +40,7 @@ public class ChefRayon {
 
     public void changeDeRayon(){
         try {
-            sleep(200);
+            sleep(tpsParcoursRayons);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

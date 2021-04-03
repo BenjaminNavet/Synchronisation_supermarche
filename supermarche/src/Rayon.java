@@ -48,9 +48,11 @@ public class Rayon {
     /**
      * Le client prend un produit dans le rayon
      */
-    public synchronized void takeProduct(){
+    //ici paramètres pour voir l'execution : on laisse ou pas dans le rendu prof?
+    public synchronized void takeProduct(Client client, Rayon rayon){
         while(stock==0 || ChefRayonSurPlace){
             try {
+                System.out.println("Le client "+ client.getNom() +" attend au rayon " + rayon.getName() );
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
