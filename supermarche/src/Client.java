@@ -10,10 +10,12 @@ public class Client extends Thread{
     List<Rayon> rayons;
     int tpsParcoursRayons;
     Chariot chariot;
+    int idxClient;
 
 
 
-    public Client(String nom, Map<String, Integer> listeCourses, List<Rayon> rayons, int tpsParcoursRayons, Chariot chariot) {
+    public Client(int idxClient,String nom, Map<String, Integer> listeCourses, List<Rayon> rayons, int tpsParcoursRayons, Chariot chariot) {
+        this.idxClient=idxClient;
         this.nom = nom;
         this.listeCourses = listeCourses;
         this.rayons = rayons;
@@ -23,6 +25,10 @@ public class Client extends Thread{
 
     public String getNom() {
         return nom;
+    }
+
+    public int getIndex() {
+        return idxClient;
     }
 
     public void changeDeRayon(){
