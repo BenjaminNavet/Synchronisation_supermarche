@@ -61,16 +61,18 @@ public class Rayon {
      * Le client prend un produit dans le rayon
      */
     //ici paramètres pour voir l'execution : on laisse ou pas dans le rendu prof?
-    public synchronized void takeProduct(Client client, Rayon rayon){
+    public synchronized void takeProduct(Client client){
         while(stock==0 || ChefRayonSurPlace){
             try {
-                System.out.println("Le client "+ client.getNom() +" attend au rayon " + rayon.getName() );
+                System.out.println("Le client n°" + client.getIndex() + " (" + client.getNom() + ") ne peut plus " +
+                        "prendre de " + getName() + ", mise en attente sur Rayon " + getIndex() + "." );
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         stock --;
+        System.out.println("Le client n°"+client.getIndex()+" ("+client.getNom()+") prend 1 article de "+getName()+".");
         notify();
     }
 
@@ -78,18 +80,17 @@ public class Rayon {
      * Le chef de rayon rajoute des produits en stock si nécessaire
      */
     public synchronized int equilibrage(ChefRayon chefRayon){
-
         int besoinArticle=this.stockMax-this.stock;
         int nbAddArticle=Math.min(besoinArticle,chefRayon.getStock(getName()));
 
-        for(int i=0;i > nbAddArticle;i++){
-            this.stock++;
+        for(int i=0;i < nbAddArticle;i++){
+            stock ++;
         }
+        System.out.println("Le chef de rayon remet "+nbAddArticle+" "+getName()+"(s) dans le rayon "+getIndex()+".");
 
         setChefRayonSurPlace(false);
-
         notify(); // pour prévenir les clients qui attendent de prendre un article
-        System.out.println("Le chef de rayon a équilibré le rayon "+ getName() +".");
+
         return chefRayon.getStock(getName())-nbAddArticle;
     }
 
