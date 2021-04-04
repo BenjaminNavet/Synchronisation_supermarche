@@ -41,7 +41,7 @@ public class Client extends Thread{
 
     public void run() {
 
-        chariot.prendreChariot();
+        chariot.prendreChariot(this);
 
         // 'autres temps sont négligés' ??
         // changeDeRayon();
@@ -51,14 +51,14 @@ public class Client extends Thread{
 
             int quantiteVoulue = listeCourses.get(rayon.getName());
             for (int j = 0; j < quantiteVoulue; j++) {
-                rayon.takeProduct(this, rayon);
+                rayon.takeProduct(this);
             }
 
             changeDeRayon();
         }
 
 
-        chariot.rendreChariot();
+        chariot.rendreChariot(this);
 
 
     }
