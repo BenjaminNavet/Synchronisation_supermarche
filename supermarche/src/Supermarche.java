@@ -42,6 +42,16 @@ public class Supermarche {
     private static final int NB_CHARIOTS = 15;
 
     /**
+     *Nombre de clients du magasin
+     */
+    private static final int NB_CLIENTS = 30;
+
+    /**
+     *Nombre d'aticles maximum par client pour chaque type d'article
+     */
+    private static final int NB_MAX_ARTICLE_PAR_CLIENT = 6;
+
+    /**
      * liste des produits présents en magasin
      */
     private static final String[] listeProduits = {"Sucre", "Farine", "Beurre", "Lait"};
@@ -64,12 +74,12 @@ public class Supermarche {
         }
 
         // création des clients
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < NB_CLIENTS; i++) {
             for (int j = 0; j < listeProduits.length; j++) {
                 // @Erwann : ici il faut multiplier le nombre aléatoire par le nombre de produits max par rayons, ainsi
                 // un client ne demandera jamais plus que la quantité max d'un rayon ( 1 x Max)
                 // erratum : je n'ai pas fait ça au dessus, car le run dure trop longtemps. j'ai mis une petite valeur à la place
-                listeDeCourses.put(listeProduits[j], (int)(Math.random() * NB_ELEMENT_PAR_CHGT ));
+                listeDeCourses.put(listeProduits[j], (int)(Math.random() * NB_MAX_ARTICLE_PAR_CLIENT ));
             }
 
             // génère automatiquement un nom aléatoire. regarde ici : https://stackoverflow.com/questions/5025651/java-randomly-generate-distinct-names
