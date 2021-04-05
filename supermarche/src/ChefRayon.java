@@ -9,8 +9,9 @@ public class ChefRayon extends Thread{
     Map<String, Integer> chargement = new HashMap();
     List<Rayon> rayons;
     int tpsParcoursRayons, tpsParcoursEntrepot, maxChgtParProduit;
+    Entrepot entrepot;
 
-    public ChefRayon(List<Rayon> rayons, int tpsParcoursRayons, int tpsParcoursEntrepot, int maxChgtParProduit) {
+    public ChefRayon(List<Rayon> rayons, int tpsParcoursRayons, int tpsParcoursEntrepot, int maxChgtParProduit, Entrepot entrepot) {
 
         this.rayons = rayons;
         for (Rayon rayon : rayons) {
@@ -19,6 +20,7 @@ public class ChefRayon extends Thread{
         this.tpsParcoursRayons    =  tpsParcoursRayons;
         this.tpsParcoursEntrepot  =  tpsParcoursEntrepot;
         this.maxChgtParProduit    =  maxChgtParProduit;
+        this.entrepot=entrepot;
     }
 
     public int getStock(String name) {
@@ -28,17 +30,28 @@ public class ChefRayon extends Thread{
     public void recharge(){
         for (int i = 0; i < rayons.size(); i++) {
             Rayon rayon = rayons.get(i);
-            this.chargement.put(rayon.getName(), maxChgtParProduit);
+            int nbArticlesDemande=Math.min(this.maxChgtParProduit-this.chargement.get(rayon.getName()),maxChgtParProduit);
+            int addChargement=entrepot.takeProductFromEntrepot(rayon.getName(),nbArticlesDemande);
+            //System.out.println(rayon.getName()+"{"+" max :" +this.maxChgtParProduit+ " , ask : "+nbArticlesDemande+" , return :"+addChargement+"}");
+            this.chargement.put(rayon.getName(),addChargement);
+
+            //System.out.println("Le chef de rayon prend "+addChargement+" "+rayon.getName()+
+            //        " dans l'entrepot. "+"Nouveau chargement de "+rayon.getName()+" : "+
+            //        this.chargement.get(rayon.getName())+"."+" Il en avait demandé "+nbArticlesDemande);
+
         }
         try {
             sleep(tpsParcoursEntrepot);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.out.println("Le chef de rayon sort de l'entrepôt en étant chargé au maximum");
+
     }
 
     public void changeDeRayon(){
         try {
+            System.out.println("Le chef de rayon change de rayon");
             sleep(tpsParcoursRayons);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -58,7 +71,8 @@ public class ChefRayon extends Thread{
                 Rayon rayon = rayons.get(i);
                 rayon.setChefRayonSurPlace(true);
                 int nombreDeProduitsDecharges = rayon.equilibrage(this);
-                this.chargement.put(rayon.getName(), chargement.get(rayon.getName()) - nombreDeProduitsDecharges);
+                int newStockChargement=this.chargement.get(rayon.getName()) - nombreDeProduitsDecharges;
+                this.chargement.put(rayon.getName(), newStockChargement );
                 changeDeRayon();
             }
 

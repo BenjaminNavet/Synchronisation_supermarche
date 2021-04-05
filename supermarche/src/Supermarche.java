@@ -22,6 +22,11 @@ public class Supermarche {
     private static final int RAYON_STOCK_MAX = 50;
 
     /**
+     * nombre d'exemplaires d'un produit dans l'entrepot à l'initialisation (-1 correspond à un stock infini)
+     */
+    private static final int ENTREPOT_STOCK_INIT = -1;
+
+    /**
      * temps en ms pour parcourir le trajet d'un rayon à un autre
      */
     private static final int TPS_PARCOURS_RAYONS = 200;
@@ -73,6 +78,13 @@ public class Supermarche {
             rayons.add(new Rayon(i,listeProduits[i], RAYON_STOCK_MAX, RAYON_STOCK_INIT));
         }
 
+        // création de l'entrepot
+        Map<String, Integer> entrepotHmap = new HashMap();
+        for (Rayon rayon : rayons) {
+            entrepotHmap.put(rayon.getName(), ENTREPOT_STOCK_INIT);
+        }
+        Entrepot entrepot= new Entrepot(entrepotHmap);
+
         // création des clients
         for (int i = 0; i < NB_CLIENTS; i++) {
             for (int j = 0; j < listeProduits.length; j++) {
@@ -91,7 +103,7 @@ public class Supermarche {
         }
 
         //création du chef de rayon
-        ChefRayon chef_de_rayon = new ChefRayon(rayons, TPS_PARCOURS_RAYONS, TPS_PARCOURS_ENTREPOT, NB_ELEMENT_PAR_CHGT);
+        ChefRayon chef_de_rayon = new ChefRayon(rayons, TPS_PARCOURS_RAYONS, TPS_PARCOURS_ENTREPOT, NB_ELEMENT_PAR_CHGT,entrepot);
 
         // on créé un deamon pour que le thread chef_de_rayon s'arrête une fois tous les clients passés et qu'il
         //ne bloque pas le programme en tournant indéfiniement
