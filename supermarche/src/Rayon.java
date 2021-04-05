@@ -8,17 +8,17 @@ public class Rayon {
     /**
      * Le nombre maximum de produits dans le rayon
      */
-    private int stockMax;
+    private final int stockMax;
 
     /**
      * Le nom du rayon
      */
-    private String nom;
+    private final String nom;
 
     /**
      * L'index du rayon
      */
-    private int index;
+    private final int index;
 
     /**
      * chef de rayon sur place
@@ -50,7 +50,7 @@ public class Rayon {
 
     /**
      * modifie la valeur du booléen chefRayonSurPlace
-     * @param chefRayonSurPlace
+     * @param chefRayonSurPlace : indique si le chef de rayon est sur place
      */
     public void setChefRayonSurPlace(boolean chefRayonSurPlace) {
         ChefRayonSurPlace = chefRayonSurPlace;

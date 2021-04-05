@@ -17,7 +17,7 @@ public class Chariot {
             }
         }
         nbChariots--;
-        //System.out.println("Le client n°" + client.getIndex()+" (" + client.getNom() +") prend un chariot." );
+        System.out.println("Le client n°" + client.getIndex()+" (" + client.getNom() +") prend un chariot." );
     }
 
     public synchronized void rendreChariot(Client client){

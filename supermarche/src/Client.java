@@ -1,8 +1,6 @@
 import java.util.List;
 import java.util.Map;
 
-import static java.lang.Thread.sleep;
-
 public class Client extends Thread{
 
     String nom;
@@ -46,9 +44,7 @@ public class Client extends Thread{
         // 'autres temps sont négligés' ??
         // changeDeRayon();
 
-        for (int i = 0; i < rayons.size(); i++) {
-            Rayon rayon = rayons.get(i);
-
+        for (Rayon rayon : rayons) {
             int quantiteVoulue = listeCourses.get(rayon.getName());
             for (int j = 0; j < quantiteVoulue; j++) {
                 rayon.takeProduct(this);

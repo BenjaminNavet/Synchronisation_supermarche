@@ -3,7 +3,6 @@ import com.github.javafaker.Faker;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class Supermarche {
     /**
@@ -66,20 +65,20 @@ public class Supermarche {
 
 
 
-        Map<String, Integer> listeDeCourses = new HashMap();
+        HashMap listeDeCourses = new HashMap();
         List<Client> listeClients = new ArrayList<>();
 
         //création du chariot
         Chariot chariot = new Chariot(NB_CHARIOTS);
 
         // création des rayons
-        List<Rayon> rayons = new ArrayList<Rayon>();
+        List<Rayon> rayons = new ArrayList<>();
         for (int i = 0; i < listeProduits.length ; i ++ ) {
             rayons.add(new Rayon(i,listeProduits[i], RAYON_STOCK_MAX, RAYON_STOCK_INIT));
         }
 
         // création de l'entrepot
-        Map<String, Integer> entrepotHmap = new HashMap();
+        HashMap entrepotHmap = new HashMap();
         for (Rayon rayon : rayons) {
             entrepotHmap.put(rayon.getName(), ENTREPOT_STOCK_INIT);
         }
@@ -87,11 +86,11 @@ public class Supermarche {
 
         // création des clients
         for (int i = 0; i < NB_CLIENTS; i++) {
-            for (int j = 0; j < listeProduits.length; j++) {
+            for (String listeProduit : listeProduits) {
                 // @Erwann : ici il faut multiplier le nombre aléatoire par le nombre de produits max par rayons, ainsi
                 // un client ne demandera jamais plus que la quantité max d'un rayon ( 1 x Max)
                 // erratum : je n'ai pas fait ça au dessus, car le run dure trop longtemps. j'ai mis une petite valeur à la place
-                listeDeCourses.put(listeProduits[j], (int)(Math.random() * NB_MAX_ARTICLE_PAR_CLIENT ));
+                listeDeCourses.put(listeProduit, (int) (Math.random() * NB_MAX_ARTICLE_PAR_CLIENT));
             }
 
             // génère automatiquement un nom aléatoire. regarde ici : https://stackoverflow.com/questions/5025651/java-randomly-generate-distinct-names
