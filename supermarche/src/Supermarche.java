@@ -71,6 +71,10 @@ public class Supermarche {
         //création du chariot
         Chariot chariot = new Chariot(NB_CHARIOTS);
 
+        //création de la caisse, on ajoute la liste de produits en paramètre pour faciliter la lecture en terminal des
+        //produits scannés
+        Caisse caisse = new Caisse(TAILLE_TAPIS, listeProduits);
+
         // création des rayons
         List<Rayon> rayons = new ArrayList<>();
         for (int i = 0; i < listeProduits.length ; i ++ ) {
@@ -98,16 +102,26 @@ public class Supermarche {
             // la bibliothèque s'appelle Faker
             Faker faker = new Faker();
             String nom = faker.name().fullName();
-            listeClients.add(new Client(i,nom, listeDeCourses, rayons, TPS_PARCOURS_RAYONS, chariot));
+            listeClients.add(new Client(i,nom, listeDeCourses, rayons, TPS_PARCOURS_RAYONS, chariot, caisse, listeProduits));
         }
 
         //création du chef de rayon
         ChefRayon chef_de_rayon = new ChefRayon(rayons, TPS_PARCOURS_RAYONS, TPS_PARCOURS_ENTREPOT, NB_ELEMENT_PAR_CHGT,entrepot);
 
+
+        //création de l'employé de caisse
+        EmployeCaisse employeCaisse = new EmployeCaisse(caisse);
+
         // on créé un deamon pour que le thread chef_de_rayon s'arrête une fois tous les clients passés et qu'il
         //ne bloque pas le programme en tournant indéfiniement
         chef_de_rayon.setDaemon(true);
+
+        //idem pour l'employé de caisse
+        employeCaisse.setDaemon(true);
+
+        // tous les "acteurs" du supermarché sont mis en route
         chef_de_rayon.start();
+        employeCaisse.start();
 
         for (Client client : listeClients) {
             client.start();

@@ -8,17 +8,21 @@ public class Client extends Thread{
     List<Rayon> rayons;
     int tpsParcoursRayons;
     Chariot chariot;
+    Caisse caisse;
+    String[] listeProduits;
     int idxClient;
 
 
 
-    public Client(int idxClient,String nom, Map<String, Integer> listeCourses, List<Rayon> rayons, int tpsParcoursRayons, Chariot chariot) {
+    public Client(int idxClient,String nom, Map<String, Integer> listeCourses, List<Rayon> rayons, int tpsParcoursRayons, Chariot chariot, Caisse caisse, String[] listeproduits) {
         this.idxClient=idxClient;
         this.nom = nom;
         this.listeCourses = listeCourses;
         this.rayons = rayons;
         this.tpsParcoursRayons = tpsParcoursRayons;
         this.chariot = chariot;
+        this.caisse = caisse;
+        this.listeProduits = listeproduits;
     }
 
     public String getNom() {
@@ -37,6 +41,8 @@ public class Client extends Thread{
         }
     }
 
+
+
     public void run() {
 
         chariot.prendreChariot(this);
@@ -54,6 +60,24 @@ public class Client extends Thread{
         }
 
 
+        // passage en caisse
+        caisse.entrerEnCaisse(this);
+
+        for (int a = 0; a < listeCourses.size(); a++){
+            for (int b = 0; b < listeCourses.get(listeProduits[a]); b ++) {
+                caisse.avant_prod();
+                caisse.prod(a);
+                caisse.apres_prod();
+            }
+        }
+        // client suivant : marqueur -1
+        caisse.avant_prod();
+        caisse.prod(-1);
+        caisse.apres_prod();
+        caisse.sortirDeCaisse(this);
+
+
+        //retour chariot
         chariot.rendreChariot(this);
 
 
