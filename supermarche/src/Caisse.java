@@ -4,7 +4,7 @@ import static java.lang.Thread.sleep;
 
 public class Caisse {
 
-    public Semaphore semaphore = new Semaphore(1);
+
     public Integer[] tapis;
     public int iprod;
     public int icons;
@@ -12,6 +12,11 @@ public class Caisse {
     public int nbplein;
     public int taille_tapis;
     String[] listeProduits;
+
+    /**
+     * Le client a terminé de poser ses articles il attend en zone de paiement que le caissier ai fini
+     */
+    public volatile boolean ClientEnPaiement = false;
 
     /**
      * Temps que met un client pour poser un article
@@ -31,6 +36,10 @@ public class Caisse {
         ClientPoseArticle = clientPoseArticle;
     }
 
+    public void setClientEnPaiement(boolean clientEnPaiement) {
+        ClientEnPaiement = clientEnPaiement;
+    }
+
     public Caisse(int taille_tapis, String[] listeProduits, int tps_poser_article) {
         tapis = new Integer[taille_tapis];
         nbvide = taille_tapis;
@@ -42,7 +51,7 @@ public class Caisse {
         this.tps_poser_article=tps_poser_article;
     }
 
-    public synchronized void entrerEnCaisse(Client client) {
+    public synchronized void entrerEnTapisDeCaisse(Client client) {
         while(ClientPoseArticle){
             try {
                 wait();
@@ -54,9 +63,24 @@ public class Caisse {
         System.out.println("Le client " + client.getIndex() +" ("+ client.getNom() + ") entre en caisse");
     }
 
-    public void sortirDeCaisse(Client client) {
-        //Système d'attente
+    public void sortirDuTapisDeCaisse(Client client) {
         System.out.println("le client " + client.getIndex() +" ("+ client.getNom() + ") sors de caisse");
+    }
+
+    public synchronized void entreEnPaiement(Client client) {
+        while(ClientEnPaiement){
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        setClientEnPaiement(true);
+        System.out.println("Le client " + client.getIndex() +" ("+ client.getNom() + ") entre en en paiement");
+    }
+
+    public void sortirDuPaiement(Client client) {
+        System.out.println("le client " + client.getIndex() +" ("+ client.getNom() + ") sors de paiement");
     }
 
 
