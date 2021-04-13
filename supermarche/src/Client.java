@@ -58,7 +58,7 @@ public class Client extends Thread{
 
 
         // passage en caisse
-        caisse.entrerEnCaisse(this);
+        caisse.entrerEnTapisDeCaisse(this);
 
         for (int a = 0; a < listeCourses.size(); a++){
             for (Rayon rayon : rayons) {
@@ -75,7 +75,9 @@ public class Client extends Thread{
         caisse.avant_prod();
         caisse.prod(-1);
         caisse.apres_prod();
-        caisse.sortirDeCaisse(this);
+        caisse.sortirDuTapisDeCaisse(this);
+        caisse.entreEnPaiement(this);
+        caisse.sortirDuPaiement(this);
 
         //retour chariot
         chariot.rendreChariot(this);
