@@ -102,7 +102,7 @@ public class Supermarche {
             // la bibliothèque s'appelle Faker
             Faker faker = new Faker();
             String nom = faker.name().fullName();
-            listeClients.add(new Client(i,nom, listeDeCourses, rayons, TPS_PARCOURS_RAYONS, chariot, caisse, listeProduits));
+            listeClients.add(new Client(i,nom, listeDeCourses, rayons, TPS_PARCOURS_RAYONS, chariot, caisse));
         }
 
         //création du chef de rayon

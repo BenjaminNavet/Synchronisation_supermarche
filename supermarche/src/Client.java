@@ -9,12 +9,10 @@ public class Client extends Thread{
     int tpsParcoursRayons;
     Chariot chariot;
     Caisse caisse;
-    String[] listeProduits;
     int idxClient;
 
 
-
-    public Client(int idxClient,String nom, Map<String, Integer> listeCourses, List<Rayon> rayons, int tpsParcoursRayons, Chariot chariot, Caisse caisse, String[] listeproduits) {
+    public Client(int idxClient,String nom, Map<String, Integer> listeCourses, List<Rayon> rayons, int tpsParcoursRayons, Chariot chariot, Caisse caisse) {
         this.idxClient=idxClient;
         this.nom = nom;
         this.listeCourses = listeCourses;
@@ -22,7 +20,6 @@ public class Client extends Thread{
         this.tpsParcoursRayons = tpsParcoursRayons;
         this.chariot = chariot;
         this.caisse = caisse;
-        this.listeProduits = listeproduits;
     }
 
     public String getNom() {
@@ -64,18 +61,21 @@ public class Client extends Thread{
         caisse.entrerEnCaisse(this);
 
         for (int a = 0; a < listeCourses.size(); a++){
-            for (int b = 0; b < listeCourses.get(listeProduits[a]); b ++) {
-                caisse.avant_prod();
-                caisse.prod(a);
-                caisse.apres_prod();
+            for (Rayon rayon : rayons) {
+                int quantiteVoulue = listeCourses.get(rayon.getName());
+                for (int j = 0; j < quantiteVoulue; j++) {
+                    caisse.avant_prod();
+                    caisse.prod(a);
+                    caisse.apres_prod();
+                }
             }
         }
+
         // client suivant : marqueur -1
         caisse.avant_prod();
         caisse.prod(-1);
         caisse.apres_prod();
         caisse.sortirDeCaisse(this);
-
 
         //retour chariot
         chariot.rendreChariot(this);

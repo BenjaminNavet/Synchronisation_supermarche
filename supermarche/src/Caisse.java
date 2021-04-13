@@ -10,20 +10,18 @@ public class Caisse {
     public int nbplein;
     public int taille_tapis;
     String[] listeProduits;
+    /**
+     * Client pose ses articles sur le tapis
+     */
+    private volatile boolean ClientPoseArticle = false;
 
-    public void entrerEnCaisse(Client client) {
-        try {
-            semaphore.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println("le client " + client.getIndex() +" ("+ client.getNom() + ") entre en caisse");
+    /**
+     * modifie la valeur du booléen ClientPoseArticle
+     * @param clientPoseArticle : indique si le client pose ses articles sur le tapis
+     */
+    public void setClientPoseArticle(boolean clientPoseArticle) {
+        ClientPoseArticle = clientPoseArticle;
     }
-    public void sortirDeCaisse(Client client) {
-            semaphore.release();
-            System.out.println("le client " + client.getIndex() +" ("+ client.getNom() + ") sors de caisse");
-    }
-
 
     public Caisse(int taille_tapis, String[] listeProduits) {
         tapis = new Integer[taille_tapis];
@@ -33,7 +31,22 @@ public class Caisse {
         iprod = 0;
         this.taille_tapis = taille_tapis;
         this.listeProduits = listeProduits;
+    }
 
+    public void entrerEnCaisse(Client client) {
+        while(ClientPoseArticle){
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        setClientPoseArticle(true);
+        System.out.println("Le client " + client.getIndex() +" ("+ client.getNom() + ") entre en caisse");
+    }
+
+    public void sortirDeCaisse(Client client) {
+        System.out.println("le client " + client.getIndex() +" ("+ client.getNom() + ") sors de caisse");
     }
 
     public synchronized void avant_prod() {
