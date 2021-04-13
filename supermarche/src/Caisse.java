@@ -33,7 +33,7 @@ public class Caisse {
         this.listeProduits = listeProduits;
     }
 
-    public void entrerEnCaisse(Client client) {
+    public synchronized void entrerEnCaisse(Client client) {
         while(ClientPoseArticle){
             try {
                 wait();
@@ -57,13 +57,16 @@ public class Caisse {
                 e.printStackTrace();
             }
         }
-
         nbvide --;
     }
 
 
-    public void prod(int produit) {
+    public synchronized void prod(int produit) {
         tapis[iprod] = produit;
+        if (produit == -1) {
+            setClientPoseArticle(false);
+            notifyAll();
+        }
     }
 
     public synchronized void apres_prod() {
@@ -81,7 +84,6 @@ public class Caisse {
                 e.printStackTrace();
             }
         }
-
         nbplein --;
     }
 
