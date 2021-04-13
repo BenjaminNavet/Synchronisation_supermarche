@@ -12,6 +12,12 @@ public class Caisse {
     public int nbplein;
     public int taille_tapis;
     String[] listeProduits;
+
+    /**
+     * Temps que met un client pour poser un article
+     */
+    public int tps_poser_article;
+
     /**
      * Client pose ses articles sur le tapis
      */
@@ -25,7 +31,7 @@ public class Caisse {
         ClientPoseArticle = clientPoseArticle;
     }
 
-    public Caisse(int taille_tapis, String[] listeProduits) {
+    public Caisse(int taille_tapis, String[] listeProduits, int tps_poser_article) {
         tapis = new Integer[taille_tapis];
         nbvide = taille_tapis;
         nbplein = 0;
@@ -33,6 +39,7 @@ public class Caisse {
         iprod = 0;
         this.taille_tapis = taille_tapis;
         this.listeProduits = listeProduits;
+        this.tps_poser_article=tps_poser_article;
     }
 
     public synchronized void entrerEnCaisse(Client client) {
@@ -68,7 +75,7 @@ public class Caisse {
 
     public synchronized void prod(int produit) {
         try {
-            sleep(20);
+            sleep(tps_poser_article);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
