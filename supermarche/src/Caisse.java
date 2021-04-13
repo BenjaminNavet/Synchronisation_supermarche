@@ -1,5 +1,7 @@
 import java.util.concurrent.Semaphore;
 
+import static java.lang.Thread.sleep;
+
 public class Caisse {
 
     public Semaphore semaphore = new Semaphore(1);
@@ -46,8 +48,12 @@ public class Caisse {
     }
 
     public void sortirDeCaisse(Client client) {
+        //Système d'attente
         System.out.println("le client " + client.getIndex() +" ("+ client.getNom() + ") sors de caisse");
     }
+
+
+
 
     public synchronized void avant_prod() {
         if(nbvide == 0) {
@@ -60,8 +66,12 @@ public class Caisse {
         nbvide --;
     }
 
-
     public synchronized void prod(int produit) {
+        try {
+            sleep(20);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         tapis[iprod] = produit;
         if (produit == -1) {
             setClientPoseArticle(false);
@@ -71,12 +81,12 @@ public class Caisse {
 
     public synchronized void apres_prod() {
         nbplein++;
-        notify();
+        notifyAll();
         iprod= (iprod+1)%taille_tapis;
     }
 
 
-    public synchronized void avant_cons() {
+    public void avant_cons() {
         if(nbplein == 0) {
             try {
                 wait();
@@ -90,12 +100,14 @@ public class Caisse {
 
     public void cons() {
         if (!(tapis[icons] == -1)) {
-            System.out.println("l'employé de caisse scanne 1 " + listeProduits[tapis[icons]]);
+            System.out.println("L'employé de caisse scanne 1 " + listeProduits[tapis[icons]]);
+        } else {
+            System.out.println("L'employé de caisse a fini le passage du client" );
         }
         tapis[icons] = null;
     }
 
-    public synchronized void apres_cons() {
+    public void apres_cons() {
         nbvide++;
         notify();
         icons= (icons+1)%taille_tapis;
