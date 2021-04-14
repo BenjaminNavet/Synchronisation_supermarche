@@ -77,10 +77,11 @@ public class Caisse {
         System.out.println("Le client " + client.getIndex() +" ("+ client.getNom() + ") entre en en paiement");
     }
 
-    public synchronized void Payer() {
+    public void Payer() {
         compteurRDV ++;
         if (compteurRDV == 2) {
             RDVpaiement.release(2);
+            compteurRDV = 0;
         }
         try {
             RDVpaiement.acquire();
@@ -88,7 +89,6 @@ public class Caisse {
             e.printStackTrace();
         }
         setClientEnPaiement(false);
-        notify();
     }
 
 
@@ -136,11 +136,12 @@ public class Caisse {
     }
 
 
-    public void cons() {
+    public synchronized void cons() {
         if (!(tapis[icons] == -1)) {
             System.out.println("L'employé de caisse scanne 1 " + listeProduits[tapis[icons]]);
         } else {
             Payer();
+            notifyAll();
             System.out.println("L'employé de caisse a fini le passage du client" );
         }
         tapis[icons] = null;
