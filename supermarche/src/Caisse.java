@@ -76,14 +76,14 @@ public class Caisse {
         while(UnClientUtiliseLeTapis){
             try {
                 wait();
-                System.out.println("Le client " + client.getIndex() +" ("+ client.getNom() + ") ne peut pas poser" +
+                System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") ne peut pas poser" +
                         " ses articles (un autre client utilise actuellement le tapis).");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         setUnClientUtiliseLeTapis(true);
-        System.out.println("Le client " + client.getIndex() +" ("+ client.getNom() + ") commence à poser ses articles");
+        System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") commence à poser ses articles");
     }
 
     public synchronized void entrerPaiement(Client client) {
@@ -91,7 +91,7 @@ public class Caisse {
         while (ClientEnAttenteDePaiement) {
             try {
                 wait();
-                System.out.println("Le client " + client.getIndex() +" ("+ client.getNom() + ") attend que" +
+                System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") attend que" +
                         " le client précédent ait fini de payer.");
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -110,7 +110,7 @@ public class Caisse {
         while(!EmployeCaisseAFiniDeScannerPourUnClient){
             try {
                 wait();
-                System.out.println("Le client " + client.getIndex() +" ("+ client.getNom() + ") attend que" +
+                System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") attend que" +
                         " l'employé de caisse ait fini de scanner tous les articles pour pouvoir payer.");
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -125,7 +125,7 @@ public class Caisse {
 
         // Réveiller tout le monde y compris l'employé de caisse
         notifyAll();
-        System.out.println("Le client " + client.getIndex() +" ("+ client.getNom() + ") a payé et quitte la caisse.");
+        System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") a payé et quitté la caisse.");
     }
 
     public synchronized void avant_prod() {
@@ -139,15 +139,18 @@ public class Caisse {
         nbvide --;
     }
 
-    public void prod(int produit) {
+    public void prod(int produit, Client client) {
         if(!(produit==-1)){
             try {
                 sleep(tps_pose_article);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") pose 1 article de "
+                    +listeProduits[produit]+ "." );
         }else{
-            System.out.println("Le client a fini de poser ses articles." );
+            System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") a fini de poser ses" +
+                    " articles." );
         }
 
         tapis[iprod] = produit;

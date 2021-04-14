@@ -65,7 +65,7 @@ public class Client extends Thread{
             int quantiteVoulue = listeCourses.get(rayon.getName());
             for (int j = 0; j < quantiteVoulue; j++) {
                 caisse.avant_prod();
-                caisse.prod(a);
+                caisse.prod(a,this);
                 caisse.apres_prod();
             }
             a+=1;
@@ -74,7 +74,7 @@ public class Client extends Thread{
 
         // client suivant : marqueur -1
         caisse.avant_prod();
-        caisse.prod(-1);
+        caisse.prod(-1,this);
         caisse.apres_prod();
         caisse.entrerPaiement(this);
         caisse.sortirPaiement(this);
