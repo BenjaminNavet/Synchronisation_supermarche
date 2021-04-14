@@ -75,9 +75,8 @@ public class Client extends Thread{
         caisse.avant_prod();
         caisse.prod(-1);
         caisse.apres_prod();
-        caisse.sortirDuTapisDeCaisse(this);
         caisse.entreEnPaiement(this);
-        caisse.sortirDuPaiement(this);
+        caisse.Payer();
 
         //retour chariot
         chariot.rendreChariot(this);

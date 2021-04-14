@@ -17,6 +17,12 @@ public class Caisse {
      * Le client a terminé de poser ses articles il attend en zone de paiement que le caissier ai fini
      */
     public volatile boolean ClientEnPaiement = false;
+
+    Semaphore RDVpaiement = new Semaphore(0);
+    int compteurRDV = 0;
+
+
+
     /**
      * Client pose ses articles sur le tapis
      */
@@ -27,12 +33,13 @@ public class Caisse {
      * @param clientPoseArticle : indique si le client pose ses articles sur le tapis
      */
     public void setClientPoseArticle(boolean clientPoseArticle) {
-        ClientPoseArticle = clientPoseArticle;
+        this.ClientPoseArticle = clientPoseArticle;
     }
 
     public void setClientEnPaiement(boolean clientEnPaiement) {
-        ClientEnPaiement = clientEnPaiement;
+        this.ClientEnPaiement = clientEnPaiement;
     }
+
 
     public Caisse(int taille_tapis, String[] listeProduits) {
         tapis = new Integer[taille_tapis];
@@ -56,9 +63,7 @@ public class Caisse {
         System.out.println("Le client " + client.getIndex() +" ("+ client.getNom() + ") entre en caisse");
     }
 
-    public void sortirDuTapisDeCaisse(Client client) {
-        System.out.println("le client " + client.getIndex() +" ("+ client.getNom() + ") sors de caisse");
-    }
+
 
     public synchronized void entreEnPaiement(Client client) {
         while(ClientEnPaiement){
@@ -67,15 +72,24 @@ public class Caisse {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            setClientEnPaiement(true);
         }
-        setClientEnPaiement(true);
         System.out.println("Le client " + client.getIndex() +" ("+ client.getNom() + ") entre en en paiement");
     }
 
-    public void sortirDuPaiement(Client client) {
-        System.out.println("le client " + client.getIndex() +" ("+ client.getNom() + ") sors de paiement");
+    public synchronized void Payer() {
+        compteurRDV ++;
+        if (compteurRDV == 2) {
+            RDVpaiement.release(2);
+        }
+        try {
+            RDVpaiement.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        setClientEnPaiement(false);
+        notify();
     }
-
 
 
 
@@ -99,7 +113,7 @@ public class Caisse {
         tapis[iprod] = produit;
         if (produit == -1) {
             setClientPoseArticle(false);
-            notifyAll();
+            // pas obligé d'avoir un notify all puisqu'il sera fait dans après prod !!! notifyAll();
         }
     }
 
@@ -110,7 +124,7 @@ public class Caisse {
     }
 
 
-    public void avant_cons() {
+    public synchronized void avant_cons() {
         if(nbplein == 0) {
             try {
                 wait();
@@ -126,12 +140,13 @@ public class Caisse {
         if (!(tapis[icons] == -1)) {
             System.out.println("L'employé de caisse scanne 1 " + listeProduits[tapis[icons]]);
         } else {
+            Payer();
             System.out.println("L'employé de caisse a fini le passage du client" );
         }
         tapis[icons] = null;
     }
 
-    public void apres_cons() {
+    public synchronized void apres_cons() {
         nbvide++;
         notify();
         icons= (icons+1)%taille_tapis;

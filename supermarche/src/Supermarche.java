@@ -127,7 +127,5 @@ public class Supermarche {
             client.start();
         }
 
-
-
     }
 }
