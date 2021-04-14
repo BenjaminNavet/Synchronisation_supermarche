@@ -4,13 +4,39 @@ import static java.lang.Thread.sleep;
 
 public class Caisse {
 
-
+    /**
+     * Buffer représentant le tapis de caisse
+     */
     public Integer[] tapis;
+
+    /**
+     * iprod est l'indice du buffer dans lequel le client va déposer son article suivant
+     */
     public int iprod;
+
+    /**
+     * icons est l'indice du buffer dans lequel l'employé de caisse va prendre l'article suivant pour le scanner
+     */
     public int icons;
+
+    /**
+     * Nombre d'espace(s) vide(s) sur le tapis
+     */
     public int nbvide;
+
+    /**
+     * Nombre d'espace(s) rempli(s) sur le tapis
+     */
     public int nbplein;
+
+    /**
+     * Nombre d'espace(s) sur le tapis
+     */
     public int taille_tapis;
+
+    /**
+     * Liste des produits
+     */
     String[] listeProduits;
 
     /**
@@ -72,7 +98,13 @@ public class Caisse {
     }
 
 
+    /** Autorise l'accès à la caisse au client ou mise en attente si elle est déjà occupée
+     * @param client : permet d'obtenir l'index du client qui souhaite entrer en caisse
+     */
     public synchronized void entrerEnTapisDeCaisse(Client client) {
+        // On a plusieurs processus en concurence donc on utilise un while.
+        // Quand ils sont réveillés, ils doivent revérifier cette condition.
+        // Mise en attente si un client dépose déjà des articles sur le tapis
         while(UnClientUtiliseLeTapis){
             try {
                 wait();
@@ -82,12 +114,20 @@ public class Caisse {
                 e.printStackTrace();
             }
         }
+        // Indique qu'un client utilise le tapis
         setUnClientUtiliseLeTapis(true);
         System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") commence à poser ses articles");
     }
 
+    /** Autorise la mise en attente de paiement d'un client (mise en attente si un client est déjà en attente
+     *  de paiement), et réveille tous les processus pour permettre à un client d'entrer en caisse à la place
+     *  de ce client
+     * @param client : permet d'obtenir l'index du client qui souhaite entrer en paiement
+     */
     public synchronized void entrerPaiement(Client client) {
-        // Tant qu'un client est déjà en attente de paiement, le client est mis en attente
+        // On a plusieurs processus en concurence donc on utilise un while.
+        // Quand ils sont réveillés, ils doivent revérifier cette condition.
+        // Mise en attente si un client est déjà en attente de paiement
         while (ClientEnAttenteDePaiement) {
             try {
                 wait();
@@ -101,8 +141,8 @@ public class Caisse {
         setUnClientUtiliseLeTapis(false);
         // Indique qu'un client attend de payer
         setClientEnAttenteDePaiement(true);
-        // On réveille une seule personne : un client
-        notify();
+        // Pas besoin de notify car si la caissière continue de scanner, elle notifyAll et si elle est à l'arret ????????????????????
+        // notifyAll();
     }
 
     public synchronized void sortirPaiement(Client client) {

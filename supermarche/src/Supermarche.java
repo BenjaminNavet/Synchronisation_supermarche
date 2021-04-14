@@ -8,17 +8,17 @@ public class Supermarche {
     /**
      * nombre d'exemplaires de chaque articles que le chef de rayon peut transporter dans sa tournée de remplissage des rayons
      */
-    private static final int NB_ELEMENT_PAR_CHGT = 5;
+    private static final int NB_ELEMENT_PAR_CHGT = 3;
 
     /**
      * le stock initial présent dans les rayons à l'ouverture du magasin
      */
-    private static final int RAYON_STOCK_INIT = 30;
+    private static final int RAYON_STOCK_INIT = 10;
 
     /**
      * nombre maximum d'exemplaires d'un produit dans un rayon
      */
-    private static final int RAYON_STOCK_MAX = 30;
+    private static final int RAYON_STOCK_MAX = 10;
 
     /**
      * nombre d'exemplaires d'un produit dans l'entrepot à l'initialisation (-1 correspond à un stock infini)
@@ -48,17 +48,17 @@ public class Supermarche {
     /**
      *Nombre de chariots dans la file à l'ouverture du magasin
      */
-    private static final int NB_CHARIOTS = 10;
+    private static final int NB_CHARIOTS = 3;
 
     /**
      *Nombre de clients du magasin
      */
-    private static final int NB_CLIENTS = 15;
+    private static final int NB_CLIENTS = 5;
 
     /**
      *Nombre d'aticles maximum par client pour chaque type d'article
      */
-    private static final int NB_MAX_ARTICLE_PAR_CLIENT = 4;
+    private static final int NB_MAX_ARTICLE_PAR_CLIENT = 3;
 
     /**
      * liste des produits présents en magasin
@@ -95,11 +95,12 @@ public class Supermarche {
 
         // création des clients
         for (int i = 0; i < NB_CLIENTS; i++) {
+            listeDeCourses = new HashMap();
             for (String listeProduit : listeProduits) {
                 // @Erwann : ici il faut multiplier le nombre aléatoire par le nombre de produits max par rayons, ainsi
                 // un client ne demandera jamais plus que la quantité max d'un rayon ( 1 x Max)
                 // erratum : je n'ai pas fait ça au dessus, car le run dure trop longtemps. j'ai mis une petite valeur à la place
-                listeDeCourses.put(listeProduit, (int) (Math.random() * NB_MAX_ARTICLE_PAR_CLIENT));
+                listeDeCourses.put(listeProduit, (int) (Math.random() * (NB_MAX_ARTICLE_PAR_CLIENT+1)));
             }
 
             // génère automatiquement un nom aléatoire. regarde ici : https://stackoverflow.com/questions/5025651/java-randomly-generate-distinct-names

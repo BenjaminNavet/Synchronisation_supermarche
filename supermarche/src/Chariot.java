@@ -7,7 +7,7 @@ public class Chariot {
     }
 
     public synchronized void prendreChariot(Client client){
-        while(nbChariots==0){
+        if(nbChariots==0){
             try {
                 System.out.println("Le client n°" + client.getIndex()+" (" + client.getNom() +") ne peut plus prendre"+
                         " de chariot, mise en attente sur Chariot." );
