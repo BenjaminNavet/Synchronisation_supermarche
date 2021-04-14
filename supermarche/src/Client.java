@@ -3,27 +3,22 @@ import java.util.Map;
 
 public class Client extends Thread{
 
-    String nom;
-    Map<String, Integer> listeCourses;
-    List<Rayon> rayons;
+    int idxClient;
+    Map<Integer, Integer> listeCourses;
     int tpsParcoursRayons;
     Chariot chariot;
     Caisse caisse;
-    int idxClient;
+    List<Rayon> rayons;
 
 
-    public Client(int idxClient,String nom, Map<String, Integer> listeCourses, List<Rayon> rayons, int tpsParcoursRayons, Chariot chariot, Caisse caisse) {
+
+    public Client(int idxClient, Map<Integer, Integer> listeCourses, List<Rayon> rayons, int tpsParcoursRayons, Chariot chariot, Caisse caisse) {
         this.idxClient=idxClient;
-        this.nom = nom;
         this.listeCourses = listeCourses;
         this.rayons = rayons;
         this.tpsParcoursRayons = tpsParcoursRayons;
         this.chariot = chariot;
         this.caisse = caisse;
-    }
-
-    public String getNom() {
-        return nom;
     }
 
     public int getIndex() {
@@ -48,7 +43,7 @@ public class Client extends Thread{
         // changeDeRayon();
 
         for (Rayon rayon : rayons) {
-            int quantiteVoulue = listeCourses.get(rayon.getName());
+            int quantiteVoulue = listeCourses.get(rayon.getIndex());
             for (int j = 0; j < quantiteVoulue; j++) {
                 rayon.takeProduct(this);
             }
@@ -62,7 +57,7 @@ public class Client extends Thread{
 
         int a = 0;
         for (Rayon rayon : rayons) {
-            int quantiteVoulue = listeCourses.get(rayon.getName());
+            int quantiteVoulue = listeCourses.get(rayon.getIndex());
             for (int j = 0; j < quantiteVoulue; j++) {
                 caisse.avant_prod();
                 caisse.prod(a,this);

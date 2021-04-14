@@ -1,5 +1,3 @@
-import com.github.javafaker.Faker;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -68,9 +66,7 @@ public class Supermarche {
 
     public static void main(String[] args) {
 
-
-
-        HashMap listeDeCourses = new HashMap();
+        HashMap listeDeCourses;
         List<Client> listeClients = new ArrayList<>();
 
         //création du chariot
@@ -78,7 +74,7 @@ public class Supermarche {
 
         //création de la caisse, on ajoute la liste de produits en paramètre pour faciliter la lecture en terminal des
         //produits scannés
-        Caisse caisse = new Caisse(TAILLE_TAPIS, listeProduits,TPS_POSER_ARTICLE);
+        Caisse caisse = new Caisse(TAILLE_TAPIS,TPS_POSER_ARTICLE);
 
         // création des rayons
         List<Rayon> rayons = new ArrayList<>();
@@ -89,26 +85,22 @@ public class Supermarche {
         // création de l'entrepot
         HashMap entrepotHmap = new HashMap();
         for (Rayon rayon : rayons) {
-            entrepotHmap.put(rayon.getName(), ENTREPOT_STOCK_INIT);
+            entrepotHmap.put(rayon.getIndex(), ENTREPOT_STOCK_INIT);
         }
         Entrepot entrepot= new Entrepot(entrepotHmap);
 
         // création des clients
         for (int i = 0; i < NB_CLIENTS; i++) {
             listeDeCourses = new HashMap();
-            for (String listeProduit : listeProduits) {
+
+            for (int j = 0; j < listeProduits.length ; j ++ ) {
                 // @Erwann : ici il faut multiplier le nombre aléatoire par le nombre de produits max par rayons, ainsi
                 // un client ne demandera jamais plus que la quantité max d'un rayon ( 1 x Max)
                 // erratum : je n'ai pas fait ça au dessus, car le run dure trop longtemps. j'ai mis une petite valeur à la place
-                listeDeCourses.put(listeProduit, (int) (Math.random() * (NB_MAX_ARTICLE_PAR_CLIENT+1)));
+                listeDeCourses.put(j, (int) (Math.random() * (NB_MAX_ARTICLE_PAR_CLIENT+1)));
             }
 
-            // génère automatiquement un nom aléatoire. regarde ici : https://stackoverflow.com/questions/5025651/java-randomly-generate-distinct-names
-            //du coup j'ai rajouté Maven au projet, regarde le pom.xml
-            // la bibliothèque s'appelle Faker
-            Faker faker = new Faker();
-            String nom = faker.name().fullName();
-            listeClients.add(new Client(i,nom, listeDeCourses, rayons, TPS_PARCOURS_RAYONS, chariot, caisse));
+            listeClients.add(new Client(i, listeDeCourses, rayons, TPS_PARCOURS_RAYONS, chariot, caisse));
         }
 
         //création du chef de rayon

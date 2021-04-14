@@ -35,11 +35,6 @@ public class Caisse {
     public int taille_tapis;
 
     /**
-     * Liste des produits
-     */
-    String[] listeProduits;
-
-    /**
      * Temps que met un client pour poser un article
      */
     public int tps_pose_article;
@@ -61,14 +56,13 @@ public class Caisse {
     public volatile boolean EmployeCaisseAFiniDeScannerPourUnClient = false;
 
 
-    public Caisse(int taille_tapis, String[] listeProduits, int tps_pose_article) {
+    public Caisse(int taille_tapis, int tps_pose_article) {
         tapis = new Integer[taille_tapis];
         nbvide = taille_tapis;
         nbplein = 0;
         icons = 0;
         iprod = 0;
         this.taille_tapis = taille_tapis;
-        this.listeProduits = listeProduits;
         this.tps_pose_article=tps_pose_article;
     }
 
@@ -108,15 +102,15 @@ public class Caisse {
         while(UnClientUtiliseLeTapis){
             try {
                 wait();
-                System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") ne peut pas poser" +
-                        " ses articles (un autre client utilise actuellement le tapis).");
+                System.out.println("Le client n°" + client.getIndex() +" ne peut pas poser ses articles " +
+                        "(un autre client utilise actuellement le tapis).");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         // Indique qu'un client utilise le tapis
         setUnClientUtiliseLeTapis(true);
-        System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") commence à poser ses articles");
+        System.out.println("Le client n°" + client.getIndex() +" commence à poser ses articles");
     }
 
     /** Autorise la mise en attente de paiement d'un client (mise en attente si un client est déjà en attente
@@ -131,8 +125,8 @@ public class Caisse {
         while (ClientEnAttenteDePaiement) {
             try {
                 wait();
-                System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") attend que" +
-                        " le client précédent ait fini de payer.");
+                System.out.println("Le client n°" + client.getIndex() +" attend que le client précédent ait" +
+                        " fini de payer.");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -150,8 +144,8 @@ public class Caisse {
         while(!EmployeCaisseAFiniDeScannerPourUnClient){
             try {
                 wait();
-                System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") attend que" +
-                        " l'employé de caisse ait fini de scanner tous les articles pour pouvoir payer.");
+                System.out.println("Le client n°" + client.getIndex() +" attend que l'employé de caisse ait fini" +
+                        " de scanner tous les articles pour pouvoir payer.");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -165,7 +159,7 @@ public class Caisse {
 
         // Réveiller tout le monde y compris l'employé de caisse
         notifyAll();
-        System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") a payé et quitté la caisse.");
+        System.out.println("Le client n°" + client.getIndex() +" a payé et quitté la caisse.");
     }
 
     public synchronized void avant_prod() {
@@ -186,11 +180,9 @@ public class Caisse {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") pose 1 article de "
-                    +listeProduits[produit]+ "." );
+            System.out.println("Le client n°" + client.getIndex() +" pose un article d'index "+produit+ "." );
         }else{
-            System.out.println("Le client n°" + client.getIndex() +" ("+ client.getNom() + ") a fini de poser ses" +
-                    " articles." );
+            System.out.println("Le client n°" + client.getIndex() +" a fini de poser ses articles." );
         }
 
         tapis[iprod] = produit;
@@ -215,7 +207,7 @@ public class Caisse {
 
     public void cons() {
         if (!(tapis[icons] == -1)) {
-            System.out.println("L'employé de caisse scanne 1 article de " + listeProduits[tapis[icons]]+".");
+            System.out.println("L'employé de caisse scanne un article d'index " + tapis[icons]+".");
         } else {
             setEmployeCaisseAFiniDeScannerPourUnClient(true);
         }

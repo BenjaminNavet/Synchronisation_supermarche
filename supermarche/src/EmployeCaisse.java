@@ -1,6 +1,6 @@
 public class EmployeCaisse extends Thread{
 
-    private Caisse caisse;
+    private final Caisse caisse;
 
     public EmployeCaisse(Caisse caisse) {
         this.caisse = caisse;

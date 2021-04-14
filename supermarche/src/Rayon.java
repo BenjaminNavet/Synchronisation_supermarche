@@ -64,15 +64,15 @@ public class Rayon {
     public synchronized void takeProduct(Client client){
         while(stock==0 || ChefRayonSurPlace){
             try {
-                System.out.println("Le client n°" + client.getIndex() + " (" + client.getNom() + ") ne peut plus " +
-                        "prendre de " + getName() + ", mise en attente sur Rayon " + getIndex() + "." );
+                System.out.println("Le client n°" + client.getIndex() + " ne peut plus prendre de " + getName() +
+                        ", mise en attente sur Rayon " + getIndex() + "." );
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         stock --;
-        System.out.println("Le client n°"+client.getIndex()+" ("+client.getNom()+") prend 1 article de "+getName()+".");
+        System.out.println("Le client n°"+client.getIndex()+" prend 1 article de "+getName()+".");
         notify();
     }
 
@@ -81,7 +81,7 @@ public class Rayon {
      */
     public synchronized int equilibrage(ChefRayon chefRayon){
         int besoinArticle=this.stockMax-this.stock;
-        int nbAddArticle=Math.min(besoinArticle,chefRayon.getStock(getName()));
+        int nbAddArticle=Math.min(besoinArticle,chefRayon.getStock(getIndex()));
 
         for(int i=0;i < nbAddArticle;i++){
             stock ++;
