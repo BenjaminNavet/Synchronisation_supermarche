@@ -8,17 +8,17 @@ public class Supermarche {
     /**
      * nombre d'exemplaires de chaque articles que le chef de rayon peut transporter dans sa tournée de remplissage des rayons
      */
-    private static final int NB_ELEMENT_PAR_CHGT = 5;
+    private static final int NB_ELEMENT_PAR_CHGT = 3;
 
     /**
      * le stock initial présent dans les rayons à l'ouverture du magasin
      */
-    private static final int RAYON_STOCK_INIT = 50;
+    private static final int RAYON_STOCK_INIT = 10;
 
     /**
      * nombre maximum d'exemplaires d'un produit dans un rayon
      */
-    private static final int RAYON_STOCK_MAX = 50;
+    private static final int RAYON_STOCK_MAX = 10;
 
     /**
      * nombre d'exemplaires d'un produit dans l'entrepot à l'initialisation (-1 correspond à un stock infini)
@@ -43,22 +43,22 @@ public class Supermarche {
     /**
      * nombre d'objets présents sur le tapis de caisse
      */
-    private static final int TAILLE_TAPIS = 20;
+    private static final int TAILLE_TAPIS = 10;
 
     /**
      *Nombre de chariots dans la file à l'ouverture du magasin
      */
-    private static final int NB_CHARIOTS = 15;
+    private static final int NB_CHARIOTS = 3;
 
     /**
      *Nombre de clients du magasin
      */
-    private static final int NB_CLIENTS = 30;
+    private static final int NB_CLIENTS = 10;
 
     /**
      *Nombre d'aticles maximum par client pour chaque type d'article
      */
-    private static final int NB_MAX_ARTICLE_PAR_CLIENT = 6;
+    private static final int NB_MAX_ARTICLE_PAR_CLIENT = 3;
 
     /**
      * liste des produits présents en magasin
@@ -118,7 +118,7 @@ public class Supermarche {
         EmployeCaisse employeCaisse = new EmployeCaisse(caisse);
 
         // on créé un deamon pour que le thread chef_de_rayon s'arrête une fois tous les clients passés et qu'il
-        //ne bloque pas le programme en tournant indéfiniement
+        // ne bloque pas le programme en tournant indéfiniment
         chef_de_rayon.setDaemon(true);
 
         //idem pour l'employé de caisse

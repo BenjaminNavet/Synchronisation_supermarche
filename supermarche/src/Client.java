@@ -60,24 +60,24 @@ public class Client extends Thread{
         // passage en caisse
         caisse.entrerEnTapisDeCaisse(this);
 
-        for (int a = 0; a < listeCourses.size(); a++){
-            for (Rayon rayon : rayons) {
-                int quantiteVoulue = listeCourses.get(rayon.getName());
-                for (int j = 0; j < quantiteVoulue; j++) {
-                    caisse.avant_prod();
-                    caisse.prod(a);
-                    caisse.apres_prod();
-                }
+        int a = 0;
+        for (Rayon rayon : rayons) {
+            int quantiteVoulue = listeCourses.get(rayon.getName());
+            for (int j = 0; j < quantiteVoulue; j++) {
+                caisse.avant_prod();
+                caisse.prod(a);
+                caisse.apres_prod();
             }
+            a+=1;
         }
+
 
         // client suivant : marqueur -1
         caisse.avant_prod();
         caisse.prod(-1);
         caisse.apres_prod();
-        caisse.sortirDuTapisDeCaisse(this);
-        caisse.entreEnPaiement(this);
-        caisse.sortirDuPaiement(this);
+        caisse.entrerPaiement(this);
+        caisse.sortirPaiement(this);
 
         //retour chariot
         chariot.rendreChariot(this);
