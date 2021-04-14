@@ -8,17 +8,17 @@ public class Supermarche {
     /**
      * nombre d'exemplaires de chaque articles que le chef de rayon peut transporter dans sa tournée de remplissage des rayons
      */
-    private static final int NB_ELEMENT_PAR_CHGT = 3;
+    private static final int NB_ELEMENT_PAR_CHGT = 5;
 
     /**
      * le stock initial présent dans les rayons à l'ouverture du magasin
      */
-    private static final int RAYON_STOCK_INIT = 10;
+    private static final int RAYON_STOCK_INIT = 30;
 
     /**
      * nombre maximum d'exemplaires d'un produit dans un rayon
      */
-    private static final int RAYON_STOCK_MAX = 10;
+    private static final int RAYON_STOCK_MAX = 30;
 
     /**
      * nombre d'exemplaires d'un produit dans l'entrepot à l'initialisation (-1 correspond à un stock infini)
@@ -48,17 +48,17 @@ public class Supermarche {
     /**
      *Nombre de chariots dans la file à l'ouverture du magasin
      */
-    private static final int NB_CHARIOTS = 3;
+    private static final int NB_CHARIOTS = 10;
 
     /**
      *Nombre de clients du magasin
      */
-    private static final int NB_CLIENTS = 10;
+    private static final int NB_CLIENTS = 15;
 
     /**
      *Nombre d'aticles maximum par client pour chaque type d'article
      */
-    private static final int NB_MAX_ARTICLE_PAR_CLIENT = 3;
+    private static final int NB_MAX_ARTICLE_PAR_CLIENT = 4;
 
     /**
      * liste des produits présents en magasin
