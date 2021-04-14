@@ -174,7 +174,6 @@ public class Caisse {
         if (!(tapis[icons] == -1)) {
             System.out.println("L'employé de caisse scanne 1 article de " + listeProduits[tapis[icons]]+".");
         } else {
-            System.out.println("L'employé de caisse a fini le passage du client." );
             setEmployeCaisseAFiniDeScannerPourUnClient(true);
         }
 
