@@ -72,8 +72,7 @@ public class Rayon {
             }
         }
         stock --;
-        System.out.println("Le client n°"+client.getIndex()+" ("+client.getNom()+") prend 1 article de "+getName()+"."
-                +" Nouveau stock de "+getName()+" : "+stock+".");
+        System.out.println("Le client n°"+client.getIndex()+" ("+client.getNom()+") prend 1 article de "+getName()+".");
         notify();
     }
 
@@ -87,8 +86,7 @@ public class Rayon {
         for(int i=0;i < nbAddArticle;i++){
             stock ++;
         }
-        System.out.println("Le chef de rayon remet "+nbAddArticle+" "+getName()+"(s) dans le rayon "+getIndex()+"."
-                +" Nouveau stock de "+getName()+" : "+stock+".");
+        System.out.println("Le chef de rayon remet "+nbAddArticle+" "+getName()+"(s) dans le rayon "+getIndex()+".");
 
         setChefRayonSurPlace(false);
         notify(); // pour prévenir les clients qui attendent de prendre un article
