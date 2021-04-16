@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import static java.lang.Thread.sleep;
@@ -45,16 +48,16 @@ public class Caisse {
     private volatile boolean UnClientUtiliseLeTapis = false;
 
     /**
-     * ClientEnAttenteDePaiement indique si un client attend déjà de payer
-     */
-    public volatile boolean ClientEnAttenteDePaiement = false;
-
-    /**
      * EmployeCaisseAFiniDeScannerPourUnClient indique si l'employé de caisse a fini de scanner les articles du
      * client en attente de paiement
      */
     public volatile boolean EmployeCaisseAFiniDeScannerPourUnClient = false;
 
+
+    /**
+     * Liste de client(s) en attente de Paiement
+     */
+    List<Integer> listeAttentePaiement = new ArrayList<>();
 
     public Caisse(int taille_tapis, int tps_pose_article) {
         tapis = new Integer[taille_tapis];
@@ -75,14 +78,6 @@ public class Caisse {
     }
 
     /**
-     * modifie la valeur du booléen ClientEnAttenteDePaiement
-     * @param clientEnAttenteDePaiement : indique si un client est déjà en attente de paiement
-     */
-    public void setClientEnAttenteDePaiement(boolean clientEnAttenteDePaiement) {
-        ClientEnAttenteDePaiement = clientEnAttenteDePaiement;
-    }
-
-    /**
      * modifie la valeur du booléen EmployeCaisseAFiniDeScannerPourUnClient
      * @param employeCaisseAFiniDeScannerPourUnClient : indique si l'employé de caisse a fini de scanner les articles
      *                                                  du client en attente de paiement
@@ -95,15 +90,15 @@ public class Caisse {
     /** Autorise l'accès à la caisse au client ou mise en attente si elle est déjà occupée
      * @param client : permet d'obtenir l'index du client qui souhaite entrer en caisse
      */
-    public synchronized void entrerEnTapisDeCaisse(Client client) {
+    public synchronized void deposeSurTapisDeCaisse(Client client) {
         // On a plusieurs processus en concurence donc on utilise un while.
         // Quand ils sont réveillés, ils doivent revérifier cette condition.
         // Mise en attente si un client dépose déjà des articles sur le tapis
         while(UnClientUtiliseLeTapis){
             try {
-                wait();
                 System.out.println("Le client n°" + client.getIndex() +" ne peut pas poser ses articles " +
                         "(un autre client utilise actuellement le tapis).");
+                wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -113,49 +108,22 @@ public class Caisse {
         System.out.println("Le client n°" + client.getIndex() +" commence à poser ses articles");
     }
 
-    /** Autorise la mise en attente de paiement d'un client (mise en attente si un client est déjà en attente
-     *  de paiement), et réveille tous les processus pour permettre à un client d'entrer en caisse à la place
-     *  de ce client
-     * @param client : permet d'obtenir l'index du client qui souhaite entrer en paiement
-     */
-    public synchronized void entrerPaiement(Client client) {
-        // On a plusieurs processus en concurence donc on utilise un while.
-        // Quand ils sont réveillés, ils doivent revérifier cette condition.
-        // Mise en attente si un client est déjà en attente de paiement
-        while (ClientEnAttenteDePaiement) {
-            try {
-                wait();
-                System.out.println("Le client n°" + client.getIndex() +" attend que le client précédent ait" +
-                        " fini de payer.");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        // Indique qu'aucun client n'utilise le tapis
-        setUnClientUtiliseLeTapis(false);
-        // Indique qu'un client attend de payer
-        setClientEnAttenteDePaiement(true);
-        // Pas besoin de notify car si la caissière continue de scanner, elle notifyAll et si elle est à l'arret ????????????????????
-        // notifyAll();
-    }
-
-    public synchronized void sortirPaiement(Client client) {
+    public synchronized void paiement(Client client) {
         // Tant que l'employé de caisse n'a pas fini de scanner les articles du client, le client est mis en attente
-        while(!EmployeCaisseAFiniDeScannerPourUnClient){
+        while(!EmployeCaisseAFiniDeScannerPourUnClient || listeAttentePaiement.get(0)!=client.getIndex()){
             try {
+                System.out.println("Le client n°" + client.getIndex() +" attend de pouvoir payer.");
                 wait();
-                System.out.println("Le client n°" + client.getIndex() +" attend que l'employé de caisse ait fini" +
-                        " de scanner tous les articles pour pouvoir payer.");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
-        // Indique qu'aucun client n'attend de payer
-        setClientEnAttenteDePaiement(false);
 
         // Indique que l'employé de caisse n'a pas fini de scanner les articles du client (puisqu'il n'a pas commencé)
         setEmployeCaisseAFiniDeScannerPourUnClient(false);
+
+        // On supprime le numéro du client de la liste d'attente de paiement car il a payé
+        listeAttentePaiement.remove(0);
 
         // Réveiller tout le monde y compris l'employé de caisse
         notifyAll();
@@ -165,6 +133,7 @@ public class Caisse {
     public synchronized void avant_prod() {
         while(nbvide == 0) {
             try {
+                System.out.println("Aucune place disponible sur le tapis.");
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -174,14 +143,17 @@ public class Caisse {
     }
 
     public void prod(int produit, Client client) {
+        try {
+            sleep(tps_pose_article);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         if(!(produit==-1)){
-            try {
-                sleep(tps_pose_article);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println("Le client n°" + client.getIndex() +" pose un article d'index "+produit+ "." );
+            System.out.println("Le client n°" + client.getIndex() +" pose un article "+produit+ "." );
         }else{
+            setUnClientUtiliseLeTapis(false);
+            listeAttentePaiement.add(client.getIndex());
             System.out.println("Le client n°" + client.getIndex() +" a fini de poser ses articles." );
         }
 
@@ -197,6 +169,9 @@ public class Caisse {
     public synchronized void avant_cons() {
         while(nbplein == 0 || EmployeCaisseAFiniDeScannerPourUnClient ) {
             try {
+                if(nbplein == 0){
+                    System.out.println("Aucun article à scanner.");
+                }
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -206,10 +181,18 @@ public class Caisse {
     }
 
     public void cons() {
+
+        try {
+            sleep(tps_pose_article*10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         if (!(tapis[icons] == -1)) {
-            System.out.println("L'employé de caisse scanne un article d'index " + tapis[icons]+".");
+            System.out.println("L'employé de caisse scanne un article " + tapis[icons]+".");
         } else {
             setEmployeCaisseAFiniDeScannerPourUnClient(true);
+            System.out.println("L'employé de caisse a fini de scanner le(s) article(s) d'un client.");
         }
 
         tapis[icons] = null;
