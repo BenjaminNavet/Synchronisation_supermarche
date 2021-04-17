@@ -39,6 +39,11 @@ public class Supermarche {
     private static final int TPS_POSER_ARTICLE = 20;
 
     /**
+     * temps en ms pour scanner un article en caisse
+     */
+    private static final int TPS_SCANNER_ARTICLE = 20;
+
+    /**
      * nombre d'objets présents sur le tapis de caisse
      */
     private static final int TAILLE_TAPIS = 10;
@@ -74,7 +79,7 @@ public class Supermarche {
 
         //création de la caisse, on ajoute la liste de produits en paramètre pour faciliter la lecture en terminal des
         //produits scannés
-        Caisse caisse = new Caisse(TAILLE_TAPIS,TPS_POSER_ARTICLE);
+        Caisse caisse = new Caisse(TAILLE_TAPIS,TPS_POSER_ARTICLE,TPS_SCANNER_ARTICLE);
 
         // création des rayons
         List<Rayon> rayons = new ArrayList<>();

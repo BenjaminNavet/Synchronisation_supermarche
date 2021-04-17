@@ -27,7 +27,7 @@ public class ChefRayon extends Thread{
 
     public void recharge(){
         for (Rayon rayon : rayons) {
-            int nbArticlesDemande = Math.min(this.maxChgtParProduit - this.chargement.get(rayon.getIndex()), maxChgtParProduit);
+            int nbArticlesDemande = this.maxChgtParProduit - this.chargement.get(rayon.getIndex());
             int addChargement = entrepot.takeProductFromEntrepot(rayon.getIndex(), nbArticlesDemande);
             this.chargement.put(rayon.getIndex(), addChargement);
         }
