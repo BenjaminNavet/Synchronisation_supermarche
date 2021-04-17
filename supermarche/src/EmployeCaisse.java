@@ -11,7 +11,7 @@ public class EmployeCaisse extends Thread{
 
     /**
      * Fonctionnement de l'employé de caisse : il cherche constamment à scanner des articles
-     *  3 phases : avant-consommation (avant de scanner), consommation (scanner), après-production (après avoir scanné)
+     *  3 phases : avant-consommation (avant de scanner), consommation (scanner), après-consommation (après avoir scanné)
      */
     public void run() {
         while (true) {
