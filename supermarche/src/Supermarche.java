@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 public class Supermarche {
     /**
-     * nombre d'exemplaires de chaque articles que le chef de rayon peut transporter dans sa tournée de remplissage des rayons
+     * nombre d'exemplaires de chaque articles que le chef de rayon peut transporter dans sa tournée de remplissage
+     * des rayons
      */
     private static final int NB_ELEMENT_PAR_CHGT = 3;
 
@@ -76,66 +77,63 @@ public class Supermarche {
 
     public static void main(String[] args) {
 
-        HashMap listeDeCourses;
-        List<Client> listeClients = new ArrayList<>();
-
-        //création du chariot
+        // Création du chariot
         Chariot chariot = new Chariot(NB_CHARIOTS);
 
-        //création de la caisse, on ajoute la liste de produits en paramètre pour faciliter la lecture en terminal des
-        //produits scannés
+        // Création de la caisse
         Caisse caisse = new Caisse(TAILLE_TAPIS,TPS_POSER_ARTICLE,TPS_SCANNER_ARTICLE,TPS_PAIEMENT);
 
-        // création des rayons
+        // Création de l'employé de caisse
+        EmployeCaisse employeCaisse = new EmployeCaisse(caisse);
+
+        // Création des rayons
         List<Rayon> rayons = new ArrayList<>();
         for (int i = 0; i < listeProduits.length ; i ++ ) {
             rayons.add(new Rayon(i,listeProduits[i], RAYON_STOCK_MAX, RAYON_STOCK_INIT));
         }
 
-        // création de l'entrepot
+        // Création de l'entrepot
         HashMap entrepotHmap = new HashMap();
         for (Rayon rayon : rayons) {
             entrepotHmap.put(rayon.getIndex(), ENTREPOT_STOCK_INIT);
         }
         Entrepot entrepot= new Entrepot(entrepotHmap);
 
-        // création des clients
-        for (int i = 0; i < NB_CLIENTS; i++) {
-            listeDeCourses = new HashMap();
+        // Création du chef de rayon
+        ChefRayon chef_de_rayon = new ChefRayon(rayons, TPS_PARCOURS_RAYONS, TPS_PARCOURS_ENTREPOT,
+                NB_ELEMENT_PAR_CHGT,entrepot);
 
+        // Création des clients
+        List<Client> listeClients = new ArrayList<>();
+        HashMap listeDeCourses;
+
+        for (int i = 0; i < NB_CLIENTS; i++) {
+            // Liste de courses du client i
+            listeDeCourses = new HashMap();
             for (int j = 0; j < listeProduits.length ; j ++ ) {
-                // @Erwann : ici il faut multiplier le nombre aléatoire par le nombre de produits max par rayons, ainsi
-                // un client ne demandera jamais plus que la quantité max d'un rayon ( 1 x Max)
-                // erratum : je n'ai pas fait ça au dessus, car le run dure trop longtemps. j'ai mis une petite valeur à la place
                 listeDeCourses.put(j, (int) (Math.random() * (NB_MAX_ARTICLE_PAR_CLIENT+1)));
             }
 
+            // Ajout du nouveau client i à la liste des clients
             listeClients.add(new Client(i, listeDeCourses, rayons, TPS_PARCOURS_RAYONS, chariot, caisse));
         }
 
-        //création du chef de rayon
-        ChefRayon chef_de_rayon = new ChefRayon(rayons, TPS_PARCOURS_RAYONS, TPS_PARCOURS_ENTREPOT, NB_ELEMENT_PAR_CHGT,entrepot);
-
-
-        //création de l'employé de caisse
-        EmployeCaisse employeCaisse = new EmployeCaisse(caisse);
-
-        // on créé un deamon pour que le thread chef_de_rayon s'arrête une fois tous les clients passés et qu'il
-        // ne bloque pas le programme en tournant indéfiniment
+        // On créé un deamon pour que le thread `chef_de_rayon` s'arrête une fois que tous les clients ont terminés
+        // leur exécution afin qu'il ne bloque pas le programme en tournant indéfiniment
         chef_de_rayon.setDaemon(true);
 
-        //idem pour l'employé de caisse
+        // On créé un deamon pour que le thread `employeCaisse` s'arrête une fois que tous les clients ont terminés
+        // leur exécution afin qu'il ne bloque pas le programme en tournant indéfiniment
         employeCaisse.setDaemon(true);
 
-        // tous les "acteurs" du supermarché sont mis en route
+        // Le chef de rayon est mis en route
         chef_de_rayon.start();
+        // L'employé de caisse est mis en route
         employeCaisse.start();
-
+        // Tous les clients sont mis en route
         for (Client client : listeClients) {
             client.start();
         }
-
-
 
     }
 }
