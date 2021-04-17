@@ -46,6 +46,11 @@ public class Caisse {
     public int tps_scanne_article;
 
     /**
+     * Temps que met un client pour payer
+     */
+    public int tps_paiement;
+
+    /**
      * UnClientUtiliseLeTapis indique si un client pose déjà ses articles sur le tapis
      */
     private volatile boolean UnClientUtiliseLeTapis = false;
@@ -62,7 +67,7 @@ public class Caisse {
      */
     List<Integer> listeAttentePaiement = new ArrayList<>();
 
-    public Caisse(int taille_tapis, int tps_pose_article, int tps_scanne_article) {
+    public Caisse(int taille_tapis, int tps_pose_article, int tps_scanne_article, int tps_paiement) {
         this.tapis = new Integer[taille_tapis];
         this.nbvide = taille_tapis;
         this.nbplein = 0;
@@ -71,6 +76,7 @@ public class Caisse {
         this.taille_tapis = taille_tapis;
         this.tps_pose_article=tps_pose_article;
         this.tps_scanne_article=tps_scanne_article;
+        this.tps_paiement=tps_paiement;
     }
 
     /**
@@ -127,6 +133,13 @@ public class Caisse {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+
+        // Le client met un temps `tps_paiement` pour payer
+        try {
+            sleep(tps_paiement);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         // On réinitialise le booléen EmployeCaisseAFiniDeScannerPourUnClient pour indiquer que l'employé de caisse
