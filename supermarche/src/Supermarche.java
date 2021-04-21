@@ -83,6 +83,9 @@ public class Supermarche {
         // Création de la caisse
         Caisse caisse = new Caisse(TAILLE_TAPIS,TPS_POSER_ARTICLE,TPS_SCANNER_ARTICLE,TPS_PAIEMENT);
 
+        // Création de l'accès au tapis de caisse
+        AccesTapisCaisse accesTapisDeCaisse = new AccesTapisCaisse();
+
         // Création de l'employé de caisse
         EmployeCaisse employeCaisse = new EmployeCaisse(caisse);
 
@@ -115,7 +118,7 @@ public class Supermarche {
             }
 
             // Ajout du nouveau client i à la liste des clients
-            listeClients.add(new Client(i, listeDeCourses, rayons, TPS_PARCOURS_RAYONS, chariot, caisse));
+            listeClients.add(new Client(i, listeDeCourses, rayons, TPS_PARCOURS_RAYONS, chariot, caisse,accesTapisDeCaisse));
         }
 
         // On créé un deamon pour que le thread `chef_de_rayon` s'arrête une fois que tous les clients ont terminés

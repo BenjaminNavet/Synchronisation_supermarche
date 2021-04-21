@@ -50,10 +50,7 @@ public class Caisse {
      */
     public int tps_paiement;
 
-    /**
-     * UnClientUtiliseLeTapis indique si un client pose déjà ses articles sur le tapis
-     */
-    private volatile boolean UnClientUtiliseLeTapis = false;
+
 
     /**
      * EmployeCaisseAFiniDeScannerPourUnClient indique si l'employé de caisse a fini de scanner les articles du
@@ -79,13 +76,7 @@ public class Caisse {
         this.tps_paiement=tps_paiement;
     }
 
-    /**
-     * modifie la valeur du booléen UnClientUtiliseLeTapis
-     * @param unClientUtiliseLeTapis : indique si un client pose déjà ses articles sur le tapis
-     */
-    public void setUnClientUtiliseLeTapis(boolean unClientUtiliseLeTapis) {
-        UnClientUtiliseLeTapis = unClientUtiliseLeTapis;
-    }
+
 
     /**
      * modifie la valeur du booléen EmployeCaisseAFiniDeScannerPourUnClient
@@ -96,27 +87,6 @@ public class Caisse {
         EmployeCaisseAFiniDeScannerPourUnClient = employeCaisseAFiniDeScannerPourUnClient;
     }
 
-
-    /** Un client dépose ses articles sur le tapis de caisse lors de son passage en caisse
-     * @param client : permet d'obtenir l'index du client qui souhaite entrer en caisse
-     */
-    public synchronized void deposeSurTapisDeCaisse(Client client) {
-        // On a plusieurs processus en concurence donc on utilise un while.
-        // Quand ils sont réveillés, ils doivent revérifier cette condition.
-        // Mise en attente si un client dépose déjà des articles sur le tapis
-        while(UnClientUtiliseLeTapis){
-            try {
-                // System.out.println("Le client n°" + client.getIndex() +" ne peut pas poser ses articles " +
-                //        "(un autre client utilise actuellement le tapis).");
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        // Indique qu'un client utilise le tapis
-        setUnClientUtiliseLeTapis(true);
-        System.out.println("Le client n°" + client.getIndex() +" commence à poser ses articles");
-    }
 
     /** Paiement d'un client lors de son passage en caisse
      * @param client : permet d'obtenir l'index du client qui souhaite payer
@@ -192,11 +162,8 @@ public class Caisse {
         if(!(produit==-1)){
             System.out.println("Le client n°" + client.getIndex() +" dépose un article "+produit+ " sur le tapis." );
         }else{
-            // On indique que personne n'utilise le tapis car le client a terminé de déposer ses articles
-            setUnClientUtiliseLeTapis(false);
             // On ajoute le client à la liste d'attente de paiement
             listeAttentePaiement.add(client.getIndex());
-            System.out.println("Le client n°" + client.getIndex() +" a fini de déposer ses articles." );
         }
         // On ajoute le produit déposé dans le buffer `tapis` à l'indice iprod
         tapis[iprod] = produit;

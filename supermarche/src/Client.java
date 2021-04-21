@@ -30,17 +30,23 @@ public class Client extends Thread{
     Caisse caisse;
 
     /**
+     * Le tapis de caisse de la caisse
+     */
+    AccesTapisCaisse accesTapisDeCaisse;
+
+    /**
      * La liste des rayons du supermarché
      */
     List<Rayon> rayons;
 
-    public Client(int idxClient, Map<Integer, Integer> listeCourses, List<Rayon> rayons, int tpsParcoursRayons, Chariot chariot, Caisse caisse) {
+    public Client(int idxClient, Map<Integer, Integer> listeCourses, List<Rayon> rayons, int tpsParcoursRayons, Chariot chariot, Caisse caisse, AccesTapisCaisse accesTapisDeCaisse) {
         this.idxClient=idxClient;
         this.listeCourses = listeCourses;
         this.rayons = rayons;
         this.tpsParcoursRayons = tpsParcoursRayons;
         this.chariot = chariot;
         this.caisse = caisse;
+        this.accesTapisDeCaisse=accesTapisDeCaisse;
     }
 
     /** Méthode qui retourne le numéro du client
@@ -82,7 +88,8 @@ public class Client extends Thread{
         }
 
         // Le client pose ses articles sur le tapis de caisse
-        caisse.deposeSurTapisDeCaisse(this);
+        accesTapisDeCaisse.deposeSurTapisDeCaisse(this);
+
         for (Rayon rayon : rayons) {
             // Nombre de produits pris dans le rayon d'index rayon.getIndex() à déposer
             int quantiteADeposer = listeCourses.get(rayon.getIndex());
@@ -98,6 +105,8 @@ public class Client extends Thread{
         caisse.avant_prod();
         caisse.prod(-1,this);
         caisse.apres_prod();
+
+        accesTapisDeCaisse.aFiniDeDeposeSurTapisDeCaisse(this);
 
         // Le client paye ses courses
         caisse.paiement(this);
