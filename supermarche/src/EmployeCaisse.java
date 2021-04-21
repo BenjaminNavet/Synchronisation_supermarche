@@ -15,9 +15,9 @@ public class EmployeCaisse extends Thread{
      */
     public void run() {
         while (true) {
-            caisse.avant_cons();
-            caisse.cons();
-            caisse.apres_cons();
+            caisse.tapisCaisse.avant_cons();
+            caisse.tapisCaisse.cons();
+            caisse.tapisCaisse.apres_cons();
         }
     }
 

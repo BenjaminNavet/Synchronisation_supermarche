@@ -82,25 +82,26 @@ public class Client extends Thread{
         }
 
         // Le client pose ses articles sur le tapis de caisse
-        caisse.deposeSurTapisDeCaisse(this);
+        caisse.tapisCaisse.deposeSurTapisDeCaisse(this);
         for (Rayon rayon : rayons) {
             // Nombre de produits pris dans le rayon d'index rayon.getIndex() à déposer
             int quantiteADeposer = listeCourses.get(rayon.getIndex());
             // Pour chaque produit que le client a dans son chariot, il cherche à le déposer sur le tapis de caisse
             // 3 phases : avant-production (avant de déposer), production (déposer), après-production (après avoir scanné)
             for (int j = 0; j < quantiteADeposer; j++) {
-                caisse.avant_prod();
-                caisse.prod(rayon.getIndex(),this);
-                caisse.apres_prod();
+                caisse.tapisCaisse.avant_prod();
+                caisse.tapisCaisse.prod(rayon.getIndex(),this);
+                caisse.tapisCaisse.apres_prod();
             }
         }
+
         // Lorsque le client a fini de poser ses produits sur le tapis de caisse, il pose la marque -1 (`client suivant`)
-        caisse.avant_prod();
-        caisse.prod(-1,this);
-        caisse.apres_prod();
+        caisse.tapisCaisse.avant_prod();
+        caisse.tapisCaisse.prod(-1,this);
+        caisse.tapisCaisse.apres_prod();
 
         // Le client paye ses courses
-        caisse.paiement(this);
+        caisse.zonePaiement.paiement(this);
 
         // Le client rend son chariot
         chariot.rendreChariot(this);
