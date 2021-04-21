@@ -90,7 +90,7 @@ public class Supermarche {
         AccesPaiement accesPaiement= new AccesPaiement(TPS_PAIEMENT);
 
         // Création de l'employé de caisse
-        EmployeCaisse employeCaisse = new EmployeCaisse(caisse);
+        EmployeCaisse employeCaisse = new EmployeCaisse(caisse,accesPaiement);
 
         // Création des rayons
         List<Rayon> rayons = new ArrayList<>();

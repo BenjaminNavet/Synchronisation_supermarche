@@ -49,7 +49,7 @@ public class Caisse {
      * EmployeCaisseAFiniDeScannerPourUnClient indique si l'employé de caisse a fini de scanner les articles du
      * client en attente de paiement
      */
-    //private volatile boolean EmployeCaisseAFiniDeScannerPourUnClient = false;
+    private volatile boolean EmployeCaisseAFiniDeScannerPourUnClient = false;
 
 
     public Caisse(int taille_tapis, int tps_pose_article, int tps_scanne_article) {
@@ -68,8 +68,11 @@ public class Caisse {
      * @param employeCaisseAFiniDeScannerPourUnClient : indique si l'employé de caisse a fini de scanner les articles
      *                                                  du client en attente de paiement
      */
-    public void setEmployeCaisseAFiniDeScannerPourUnClient(boolean employeCaisseAFiniDeScannerPourUnClient) {
-        // EmployeCaisseAFiniDeScannerPourUnClient = employeCaisseAFiniDeScannerPourUnClient;
+    public synchronized void setEmployeCaisseAFiniDeScannerPourUnClient(boolean employeCaisseAFiniDeScannerPourUnClient) {
+        EmployeCaisseAFiniDeScannerPourUnClient = employeCaisseAFiniDeScannerPourUnClient;
+        // Potentiellement plusieurs processus en attente mais on souhaite surtout relancer l'activité de l'employé
+        // de caisse (recommencer à scanner)
+        notifyAll();
     }
 
     /**
@@ -135,7 +138,7 @@ public class Caisse {
         // Quand ils sont réveillés, ils doivent revérifier cette condition.
         // Tant qu'il n'y a aucune article sur le tapis ou qu'un client est entrain de payer,
         // l'employé de caisse est mis en attente
-        if(nbplein == 0) {
+        while(nbplein == 0 || EmployeCaisseAFiniDeScannerPourUnClient) {
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -149,7 +152,9 @@ public class Caisse {
     /**
      * Méthode de consommation permettant de d'enlever un article du tapis
      */
-    public void cons() {
+    public boolean cons() {
+        // L'employé de caisse a fini de scanner les articles du client ?
+        boolean finScan;
 
         // L'employé de caisse met un temps `tps_scanne_article` pour scanner un article
         try {
@@ -162,14 +167,19 @@ public class Caisse {
         // fini de scanner, permettant au client de payer
         if (!(tapis[icons] == -1)) {
             System.out.println("L'employé de caisse scanne un article " + tapis[icons]+".");
+            finScan= false;
         } else {
             // On indique que l'employé de caisse a fini de scanner les articles du client
-            // setEmployeCaisseAFiniDeScannerPourUnClient(true);
-            // System.out.println("L'employé de caisse a fini de scanner le(s) article(s) d'un client.");
+            finScan= true;
+            setEmployeCaisseAFiniDeScannerPourUnClient(true);
+            System.out.println("L'employé de caisse a fini de scanner le(s) article(s) d'un client.");
         }
 
         // On retire le produit scanné du buffer `tapis` : indice icons de tapis est réinitialisé à null
         tapis[icons] = null;
+
+        // Indique si l'employé de caisse a fini de scanner les articles ou pas
+        return finScan;
     }
 
     public synchronized void apres_cons() {

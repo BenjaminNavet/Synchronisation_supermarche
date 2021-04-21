@@ -5,8 +5,14 @@ public class EmployeCaisse extends Thread{
      */
     private final Caisse caisse;
 
-    public EmployeCaisse(Caisse caisse) {
+    /**
+     * Acces au paiement lors du passage en caisse
+     */
+    private AccesPaiement accesPaiement;
+
+    public EmployeCaisse(Caisse caisse, AccesPaiement accesPaiement) {
         this.caisse = caisse;
+        this.accesPaiement=accesPaiement;
     }
 
     /**
@@ -16,7 +22,10 @@ public class EmployeCaisse extends Thread{
     public void run() {
         while (true) {
             caisse.avant_cons();
-            caisse.cons();
+            boolean enMouvement=caisse.cons();
+            if(enMouvement) {
+                accesPaiement.setEmployeCaisseAFiniDeScannerPourUnClient(enMouvement);
+            }
             caisse.apres_cons();
         }
     }

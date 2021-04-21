@@ -120,6 +120,9 @@ public class Client extends Thread{
         // Le client a fini de payer
         accesPaiement.sortPaiement(this);
 
+        // Le client a fini de payer, l'employé de caisse recommence donc à scanner
+        caisse.setEmployeCaisseAFiniDeScannerPourUnClient(false);
+
         // Le client rend son chariot
         chariot.rendreChariot(this);
     }

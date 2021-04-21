@@ -25,6 +25,16 @@ public class AccesPaiement {
         this.tps_paiement=tps_paiement;
     }
 
+    /**
+     * modifie la valeur du booléen EmployeCaisseAFiniDeScannerPourUnClient
+     * @param employeCaisseAFiniDeScannerPourUnClient : indique si l'employé de caisse a fini de scanner les articles
+     *                                                  du client en attente de paiement
+     */
+    public synchronized void setEmployeCaisseAFiniDeScannerPourUnClient(boolean employeCaisseAFiniDeScannerPourUnClient) {
+        EmployeCaisseAFiniDeScannerPourUnClient = employeCaisseAFiniDeScannerPourUnClient;
+        notifyAll();
+    }
+
     /** Entrée en paiement d'un client lors de son passage en caisse
      * @param client : permet d'obtenir l'index du client qui souhaite payer
      */
@@ -60,10 +70,9 @@ public class AccesPaiement {
      */
     public synchronized void sortPaiement(Client client) {
 
-
         // On réinitialise le booléen EmployeCaisseAFiniDeScannerPourUnClient pour indiquer que l'employé de caisse
         // n'a pas fini de scanner les articles du client suivant (puisqu'il n'a pas commencé)
-        // setEmployeCaisseAFiniDeScannerPourUnClient(false);
+        setEmployeCaisseAFiniDeScannerPourUnClient(false);
 
         // On supprime le numéro du client de la liste d'attente de paiement car il a payé
         listeAttentePaiement.remove(0);
@@ -72,6 +81,7 @@ public class AccesPaiement {
 
         // On réveille tout le monde car il y a plusieurs processus en concurrence
         notifyAll();
+
     }
 
 }
