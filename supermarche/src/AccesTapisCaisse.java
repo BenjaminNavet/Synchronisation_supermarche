@@ -16,7 +16,7 @@ public class AccesTapisCaisse {
         UnClientUtiliseLeTapis = unClientUtiliseLeTapis;
     }
 
-    /** Un client dépose ses articles sur le tapis de caisse lors de son passage en caisse
+    /** Un client souhaite déposer ses articles sur le tapis de caisse lors de son passage en caisse
      * @param client : permet d'obtenir l'index du client qui souhaite entrer en caisse
      */
     public synchronized void deposeSurTapisDeCaisse(Client client) {
@@ -37,9 +37,15 @@ public class AccesTapisCaisse {
         System.out.println("Le client n°" + client.getIndex() +" commence à poser ses articles");
     }
 
+    /** Un client a fini de déposer ses articles sur le tapis de caisse lors de son passage en caisse
+     * @param client : permet d'obtenir l'index du client qui souhaite entrer en caisse
+     */
     public synchronized void aFiniDeDeposeSurTapisDeCaisse(Client client) {
+        // Indique qu'aucun client n'utilise le tapis
         setUnClientUtiliseLeTapis(false);
         System.out.println("Le client n°" + client.getIndex() +" a fini de poser ses articles");
+        // On libère une seule place car seulement une personne peut accèder au tapis donc un seul processus en attente
+        // est réveillé
         notify();
     }
 

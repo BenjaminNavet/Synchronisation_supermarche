@@ -49,7 +49,7 @@ public class Caisse {
      * EmployeCaisseAFiniDeScannerPourUnClient indique si l'employé de caisse a fini de scanner les articles du
      * client en attente de paiement
      */
-    //public volatile boolean EmployeCaisseAFiniDeScannerPourUnClient = false;
+    //private volatile boolean EmployeCaisseAFiniDeScannerPourUnClient = false;
 
 
     public Caisse(int taille_tapis, int tps_pose_article, int tps_scanne_article) {
