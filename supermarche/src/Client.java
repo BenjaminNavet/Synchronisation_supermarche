@@ -117,7 +117,7 @@ public class Client extends Thread{
         // Le client paye ses courses
         accesPaiement.entrePaiement(this);
 
-        // Le client paye ses courses
+        // Le client a fini de payer
         accesPaiement.sortPaiement(this);
 
         // Le client rend son chariot
