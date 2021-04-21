@@ -46,25 +46,13 @@ public class Caisse {
     public int tps_scanne_article;
 
     /**
-     * Temps que met un client pour payer
-     */
-    public int tps_paiement;
-
-
-
-    /**
      * EmployeCaisseAFiniDeScannerPourUnClient indique si l'employé de caisse a fini de scanner les articles du
      * client en attente de paiement
      */
-    public volatile boolean EmployeCaisseAFiniDeScannerPourUnClient = false;
+    //public volatile boolean EmployeCaisseAFiniDeScannerPourUnClient = false;
 
 
-    /**
-     * Liste de client(s) en attente de Paiement
-     */
-    List<Integer> listeAttentePaiement = new ArrayList<>();
-
-    public Caisse(int taille_tapis, int tps_pose_article, int tps_scanne_article, int tps_paiement) {
+    public Caisse(int taille_tapis, int tps_pose_article, int tps_scanne_article) {
         this.tapis = new Integer[taille_tapis];
         this.nbvide = taille_tapis;
         this.nbplein = 0;
@@ -73,10 +61,7 @@ public class Caisse {
         this.taille_tapis = taille_tapis;
         this.tps_pose_article=tps_pose_article;
         this.tps_scanne_article=tps_scanne_article;
-        this.tps_paiement=tps_paiement;
     }
-
-
 
     /**
      * modifie la valeur du booléen EmployeCaisseAFiniDeScannerPourUnClient
@@ -84,47 +69,8 @@ public class Caisse {
      *                                                  du client en attente de paiement
      */
     public void setEmployeCaisseAFiniDeScannerPourUnClient(boolean employeCaisseAFiniDeScannerPourUnClient) {
-        EmployeCaisseAFiniDeScannerPourUnClient = employeCaisseAFiniDeScannerPourUnClient;
+        // EmployeCaisseAFiniDeScannerPourUnClient = employeCaisseAFiniDeScannerPourUnClient;
     }
-
-
-    /** Paiement d'un client lors de son passage en caisse
-     * @param client : permet d'obtenir l'index du client qui souhaite payer
-     */
-    public synchronized void paiement(Client client) {
-        // On a plusieurs processus en concurence donc on utilise un while.
-        // Quand ils sont réveillés, ils doivent revérifier cette condition.
-        // Mise en attente si l'employé de caisse n'a pas fini de scanner les articles du client ou si le
-        // client n'est pas le premier sur la liste d'attente
-        while(!EmployeCaisseAFiniDeScannerPourUnClient || listeAttentePaiement.get(0)!=client.getIndex()){
-            try {
-                System.out.println("Le client n°" + client.getIndex() +" attend de pouvoir payer.");
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Le client met un temps `tps_paiement` pour payer
-        try {
-            sleep(tps_paiement);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // On réinitialise le booléen EmployeCaisseAFiniDeScannerPourUnClient pour indiquer que l'employé de caisse
-        // n'a pas fini de scanner les articles du client suivant (puisqu'il n'a pas commencé)
-        setEmployeCaisseAFiniDeScannerPourUnClient(false);
-
-        // On supprime le numéro du client de la liste d'attente de paiement car il a payé
-        listeAttentePaiement.remove(0);
-
-        System.out.println("Le client n°" + client.getIndex() +" a payé et quitté la caisse.");
-
-        // On réveille tout le monde car il y a plusieurs processus en concurrence
-        notifyAll();
-    }
-
 
     /**
      * Méthode d'avant production permettant de vérifier s'il est possible de déposer un article sur le tapis
@@ -133,7 +79,7 @@ public class Caisse {
         // On a plusieurs processus en concurence donc on utilise un while.
         // Quand ils sont réveillés, ils doivent revérifier cette condition.
         // Tant qu'il n'y a aucune place disponible sur le tapis, le client est mis en attente
-        while(nbvide == 0) {
+        if(nbvide == 0) {
             try {
                 System.out.println("Aucune place disponible sur le tapis.");
                 wait();
@@ -161,9 +107,6 @@ public class Caisse {
         // `client suivant` (-1)
         if(!(produit==-1)){
             System.out.println("Le client n°" + client.getIndex() +" dépose un article "+produit+ " sur le tapis." );
-        }else{
-            // On ajoute le client à la liste d'attente de paiement
-            listeAttentePaiement.add(client.getIndex());
         }
         // On ajoute le produit déposé dans le buffer `tapis` à l'indice iprod
         tapis[iprod] = produit;
@@ -178,7 +121,7 @@ public class Caisse {
         // contient un article de plus
         nbplein++;
         // On notifie tout le monde car il y a plusieurs processus en concurrence
-        notifyAll();
+        notify();
         // Le tapis est circulaire donc l'indice de production suivant est égal à l'indice actuel + 1, modulo la
         // taille du tapis
         iprod= (iprod+1)%taille_tapis;
@@ -192,7 +135,7 @@ public class Caisse {
         // Quand ils sont réveillés, ils doivent revérifier cette condition.
         // Tant qu'il n'y a aucune article sur le tapis ou qu'un client est entrain de payer,
         // l'employé de caisse est mis en attente
-        while(nbplein == 0 || EmployeCaisseAFiniDeScannerPourUnClient ) {
+        if(nbplein == 0) {
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -221,8 +164,8 @@ public class Caisse {
             System.out.println("L'employé de caisse scanne un article " + tapis[icons]+".");
         } else {
             // On indique que l'employé de caisse a fini de scanner les articles du client
-            setEmployeCaisseAFiniDeScannerPourUnClient(true);
-            System.out.println("L'employé de caisse a fini de scanner le(s) article(s) d'un client.");
+            // setEmployeCaisseAFiniDeScannerPourUnClient(true);
+            // System.out.println("L'employé de caisse a fini de scanner le(s) article(s) d'un client.");
         }
 
         // On retire le produit scanné du buffer `tapis` : indice icons de tapis est réinitialisé à null
@@ -234,7 +177,7 @@ public class Caisse {
         // article) qu'une place vient d'être libérée sur le tapis
         nbvide++;
         // On notifie tout le monde car il y a plusieurs processus en concurrence
-        notifyAll();
+        notify();
         // Le tapis est circulaire donc l'indice de consommation suivant est égal à l'indice actuel + 1, modulo la
         // taille du tapis
         icons= (icons+1)%taille_tapis;

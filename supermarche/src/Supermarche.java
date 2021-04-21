@@ -81,10 +81,13 @@ public class Supermarche {
         Chariot chariot = new Chariot(NB_CHARIOTS);
 
         // Création de la caisse
-        Caisse caisse = new Caisse(TAILLE_TAPIS,TPS_POSER_ARTICLE,TPS_SCANNER_ARTICLE,TPS_PAIEMENT);
+        Caisse caisse = new Caisse(TAILLE_TAPIS,TPS_POSER_ARTICLE,TPS_SCANNER_ARTICLE);
 
         // Création de l'accès au tapis de caisse
         AccesTapisCaisse accesTapisDeCaisse = new AccesTapisCaisse();
+
+        // Création de l'accès au paiement
+        AccesPaiement accesPaiement= new AccesPaiement(TPS_PAIEMENT);
 
         // Création de l'employé de caisse
         EmployeCaisse employeCaisse = new EmployeCaisse(caisse);
@@ -118,7 +121,7 @@ public class Supermarche {
             }
 
             // Ajout du nouveau client i à la liste des clients
-            listeClients.add(new Client(i, listeDeCourses, rayons, TPS_PARCOURS_RAYONS, chariot, caisse,accesTapisDeCaisse));
+            listeClients.add(new Client(i, listeDeCourses, rayons, TPS_PARCOURS_RAYONS, chariot, caisse,accesTapisDeCaisse,accesPaiement));
         }
 
         // On créé un deamon pour que le thread `chef_de_rayon` s'arrête une fois que tous les clients ont terminés
