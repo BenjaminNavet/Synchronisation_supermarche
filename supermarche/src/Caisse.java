@@ -106,8 +106,8 @@ public class Caisse {
         // Mise en attente si un client dépose déjà des articles sur le tapis
         while(UnClientUtiliseLeTapis){
             try {
-                System.out.println("Le client n°" + client.getIndex() +" ne peut pas poser ses articles " +
-                        "(un autre client utilise actuellement le tapis).");
+                // System.out.println("Le client n°" + client.getIndex() +" ne peut pas poser ses articles " +
+                //        "(un autre client utilise actuellement le tapis).");
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -190,7 +190,7 @@ public class Caisse {
         // Si l'index du produit est différent de -1, le client dépose un article sinon, il dépose la marque
         // `client suivant` (-1)
         if(!(produit==-1)){
-            System.out.println("Le client n°" + client.getIndex() +" dépose un article "+produit+ "." );
+            System.out.println("Le client n°" + client.getIndex() +" dépose un article "+produit+ " sur le tapis." );
         }else{
             // On indique que personne n'utilise le tapis car le client a terminé de déposer ses articles
             setUnClientUtiliseLeTapis(false);
@@ -227,9 +227,6 @@ public class Caisse {
         // l'employé de caisse est mis en attente
         while(nbplein == 0 || EmployeCaisseAFiniDeScannerPourUnClient ) {
             try {
-                if(nbplein == 0){
-                    System.out.println("Aucun article à scanner.");
-                }
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
