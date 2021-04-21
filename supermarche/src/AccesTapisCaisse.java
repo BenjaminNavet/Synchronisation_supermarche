@@ -18,6 +18,7 @@ public class AccesTapisCaisse {
 
     /** Un client souhaite déposer ses articles sur le tapis de caisse lors de son passage en caisse
      * @param client : permet d'obtenir l'index du client qui souhaite entrer en caisse
+     * Synchronized : entrée en exclusion mutuelle pour la variable UnClientUtiliseLeTapis
      */
     public synchronized void deposeSurTapisDeCaisse(Client client) {
         // On a un seul type de processus en concurence donc on utilise un if.
@@ -39,6 +40,7 @@ public class AccesTapisCaisse {
 
     /** Un client a fini de déposer ses articles sur le tapis de caisse lors de son passage en caisse
      * @param client : permet d'obtenir l'index du client qui souhaite entrer en caisse
+     * Synchronized : entrée en exclusion mutuelle pour le réveil des processus en attente
      */
     public synchronized void aFiniDeDeposeSurTapisDeCaisse(Client client) {
         // Indique qu'aucun client n'utilise le tapis

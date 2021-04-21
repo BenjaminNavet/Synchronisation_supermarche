@@ -29,6 +29,7 @@ public class AccesPaiement {
      * modifie la valeur du booléen EmployeCaisseAFiniDeScannerPourUnClient
      * @param employeCaisseAFiniDeScannerPourUnClient : indique si l'employé de caisse a fini de scanner les articles
      *                                                  du client en attente de paiement
+     * Synchronized : entrée en exclusion mutuelle pour la variable EmployeCaisseAFiniDeScannerPourUnClient
      */
     public synchronized void setEmployeCaisseAFiniDeScannerPourUnClient(boolean employeCaisseAFiniDeScannerPourUnClient) {
         EmployeCaisseAFiniDeScannerPourUnClient = employeCaisseAFiniDeScannerPourUnClient;
@@ -37,6 +38,8 @@ public class AccesPaiement {
 
     /** Entrée en paiement d'un client lors de son passage en caisse
      * @param client : permet d'obtenir l'index du client qui souhaite payer
+     * Synchronized : entrée en exclusion mutuelle pour la variable EmployeCaisseAFiniDeScannerPourUnClient et
+     * listeAttentePaiement
      */
     public synchronized void entrePaiement(Client client) {
 
@@ -67,6 +70,7 @@ public class AccesPaiement {
 
     /** Paiement d'un client lors de son passage en caisse
      * @param client : permet d'obtenir l'index du client qui souhaite payer
+     * Synchronized : entrée en exclusion mutuelle pour pour le réveil des processus en attente
      */
     public synchronized void sortPaiement(Client client) {
 
