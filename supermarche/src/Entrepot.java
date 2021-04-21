@@ -5,7 +5,7 @@ public class Entrepot {
     /**
      * Liste des stocks dans l'entrepôt pour chaque rayon
      */
-    Map<Integer, Integer> StockEntrepot;
+    private Map<Integer, Integer> StockEntrepot;
 
     public Entrepot(Map<Integer, Integer> StockEntrepot) {
         this.StockEntrepot=StockEntrepot;

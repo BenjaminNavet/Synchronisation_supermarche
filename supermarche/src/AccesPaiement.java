@@ -8,18 +8,18 @@ public class AccesPaiement {
     /**
      * Liste de client(s) en attente de Paiement
      */
-    List<Integer> listeAttentePaiement = new ArrayList<>();
+    private List<Integer> listeAttentePaiement = new ArrayList<>();
 
     /**
      * EmployeCaisseAFiniDeScannerPourUnClient indique si l'employé de caisse a fini de scanner les articles du
      * client en attente de paiement
      */
-    public volatile boolean EmployeCaisseAFiniDeScannerPourUnClient = false;
+    private volatile boolean EmployeCaisseAFiniDeScannerPourUnClient = false;
 
     /**
      * Temps que met un client pour payer
      */
-    public int tps_paiement;
+    private int tps_paiement;
 
     public AccesPaiement(int tps_paiement){
         this.tps_paiement=tps_paiement;

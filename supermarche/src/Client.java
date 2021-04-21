@@ -6,43 +6,43 @@ public class Client extends Thread{
     /**
      * Le numéro du client
      */
-    int idxClient;
+    private int idxClient;
 
     /**
      * La liste de courses du client
      */
-    Map<Integer, Integer> listeCourses;
+    private Map<Integer, Integer> listeCourses;
 
     /**
      * Le temps que met un client pour se déplacer entre deux rayons
      */
-    int tpsParcoursRayons;
+    private int tpsParcoursRayons;
 
 
     /**
      * La file de chariots dans laquelle le client va prendre puis rendre un chariot
      */
-    Chariot chariot;
+    private Chariot chariot;
 
     /**
      * La caisse que va utiliser le client pour déposer ses articles sur le tapis puis pour payer
      */
-    Caisse caisse;
+    private Caisse caisse;
 
     /**
      * Le tapis de caisse de la caisse
      */
-    AccesTapisCaisse accesTapisDeCaisse;
+    private AccesTapisCaisse accesTapisDeCaisse;
 
     /**
      * Acces au paiement lors du passage en caisse
      */
-    AccesPaiement accesPaiement;
+    private AccesPaiement accesPaiement;
 
     /**
      * La liste des rayons du supermarché
      */
-    List<Rayon> rayons;
+    private List<Rayon> rayons;
 
     public Client(int idxClient, Map<Integer, Integer> listeCourses, List<Rayon> rayons, int tpsParcoursRayons, Chariot chariot, Caisse caisse, AccesTapisCaisse accesTapisDeCaisse, AccesPaiement accesPaiement) {
         this.idxClient=idxClient;
