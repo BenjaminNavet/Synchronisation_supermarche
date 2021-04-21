@@ -8,47 +8,47 @@ public class Caisse {
     /**
      * Buffer représentant le tapis de caisse
      */
-    public Integer[] tapis;
+    private Integer[] tapis;
 
     /**
      * iprod est l'indice du buffer dans lequel le client va déposer son article suivant
      */
-    public int iprod;
+    private int iprod;
 
     /**
      * icons est l'indice du buffer dans lequel l'employé de caisse va prendre l'article suivant pour le scanner
      */
-    public int icons;
+    private int icons;
 
     /**
      * Nombre d'espace(s) vide(s) sur le tapis
      */
-    public int nbvide;
+    private int nbvide;
 
     /**
      * Nombre d'espace(s) rempli(s) sur le tapis
      */
-    public int nbplein;
+    private int nbplein;
 
     /**
      * Nombre d'espace(s) sur le tapis
      */
-    public int taille_tapis;
+    private int taille_tapis;
 
     /**
      * Temps que met un client pour poser un article
      */
-    public int tps_pose_article;
+    private int tps_pose_article;
 
     /**
      * Temps que met un employé de caisse pour scanner un article
      */
-    public int tps_scanne_article;
+    private int tps_scanne_article;
 
     /**
      * Temps que met un client pour payer
      */
-    public int tps_paiement;
+    private int tps_paiement;
 
 
 
@@ -56,7 +56,7 @@ public class Caisse {
      * EmployeCaisseAFiniDeScannerPourUnClient indique si l'employé de caisse a fini de scanner les articles du
      * client en attente de paiement
      */
-    public volatile boolean EmployeCaisseAFiniDeScannerPourUnClient = false;
+    private volatile boolean EmployeCaisseAFiniDeScannerPourUnClient = false;
 
 
     /**

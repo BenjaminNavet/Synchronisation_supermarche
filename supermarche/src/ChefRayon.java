@@ -7,34 +7,34 @@ public class ChefRayon extends Thread{
     /**
      * La liste contenant le nombre d'exemplaires pour chaque produit que transporte le chef de rayon
      */
-    Map<Integer, Integer> chargement = new HashMap();
+    private Map<Integer, Integer> chargement = new HashMap();
 
     /**
      * La liste des rayons du supermarché
      */
-    List<Rayon> rayons;
+    private List<Rayon> rayons;
 
     /**
      * Le temps que met le chef de rayon pour aller d'un rayon à un autre
      */
-    int tpsParcoursRayons;
+    private int tpsParcoursRayons;
 
 
     /**
      * Le temps que met le chef de rayon pour se réapprovisionner dans l'entrepôt
      */
-    int tpsParcoursEntrepot;
+    private  int tpsParcoursEntrepot;
 
 
     /**
      * Le nombre maximum d'exemplaires de chaque produit que peut transporter le chef de rayon à la fois
      */
-    int maxChgtParProduit;
+    private  int maxChgtParProduit;
 
     /**
      * L'entrepôt dans lequel le chef de rayon va se réapprovisionner
      */
-    Entrepot entrepot;
+    private Entrepot entrepot;
 
     public ChefRayon(List<Rayon> rayons, int tpsParcoursRayons, int tpsParcoursEntrepot, int maxChgtParProduit, Entrepot entrepot) {
         this.rayons = rayons;
