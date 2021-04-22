@@ -188,7 +188,7 @@ public class Caisse {
         } else {
             // On indique que l'employé de caisse a fini de scanner les articles du client
             finScan= true;
-            setEmployeCaisseAFiniDeScannerPourUnClient(true);
+            EmployeCaisseAFiniDeScannerPourUnClient = true;
             System.out.println("L'employé de caisse a fini de scanner le(s) article(s) d'un client.");
         }
 
