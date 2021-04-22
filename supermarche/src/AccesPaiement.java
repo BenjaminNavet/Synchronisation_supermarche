@@ -33,6 +33,10 @@ public class AccesPaiement {
      */
     public synchronized void setEmployeCaisseAFiniDeScannerPourUnClient(boolean employeCaisseAFiniDeScannerPourUnClient) {
         EmployeCaisseAFiniDeScannerPourUnClient = employeCaisseAFiniDeScannerPourUnClient;
+        // Si on set EmployeCaisseAFiniDeScannerPourUnClient à false, cela veut dire que l'employé de caisse n'a pas
+        // terminé de scanner les articles du client. Le thread du client reste donc en attente. Il n'y a donc
+        // pas besoin de réveiller de thread
+        // Sinon :
         if(employeCaisseAFiniDeScannerPourUnClient) {
             // Lorsque l'employé de caisse indique qu'elle a terminé de scanner les articles du client, on veut
             // réveiller le client qui est en attente de paiement de caisse, mais plusieurs threads sont potentiellement

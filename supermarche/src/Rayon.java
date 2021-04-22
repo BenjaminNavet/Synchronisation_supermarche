@@ -57,6 +57,9 @@ public class Rayon {
 
     /** Méthode permettant à un client de prendre un produit dans le rayon
      * @param client : permet d'obtenir l'index du client qui souhaite prendre un article
+     * synchronized : ici on ne veut pas que le chef de rayon manipule le stock du rayon pendant qu'un client
+     * est occupé à prendre des produits. Synchronized empêche l'invocation de methodes synchronized du même OBJET dans
+     * le même temps (comprendre ici takeProduct et equilibrage)
      */
     public synchronized void takeProduct(Client client){
 
@@ -87,6 +90,9 @@ public class Rayon {
     /** Méthode permettant au chef de rayon de remplir le rayon
      * @param chefRayon : le chef de rayon qui vient remplir le rayon
      * @return nbAddArticle : le nombre d'article ajouté au rayon par le chef de rayon
+     * synchronized : ici on ne veut pas que le chef de rayon manipule le stock du rayon pendant qu'un client
+     * est occupé à prendre des produits. Synchronized empêche l'invocation de methodes synchronized du même OBJET dans
+     * le même temps (comprendre ici takeProduct et equilibrage)
      */
     public synchronized int equilibrage(ChefRayon chefRayon){
 

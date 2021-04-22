@@ -11,6 +11,7 @@ public class Chariot {
 
     /** Méthode permettant à un client de prendre un chariot
      * @param client : permet d'obtenir l'index du client qui souhaite prendre un chariot
+     * Synchronized : exclusion mutuelle pour la variable partagée nbChariots
      */
     public synchronized void prendreChariot(Client client){
         // On a un seul type de processus donc on utilise un if et on ne réveillera qu'un seul processus lorsqu'un
@@ -33,6 +34,7 @@ public class Chariot {
 
     /** Méthode permettant à un client de rendre un chariot
      * @param client : permet d'obtenir l'index du client qui souhaite rendre un chariot
+     * Synchronized : exclusion mutuelle pour la variable partagée nbChariots
      */
     public synchronized void rendreChariot(Client client){
 

@@ -72,8 +72,8 @@ public class Caisse {
     public synchronized void setEmployeCaisseAFiniDeScannerPourUnClient(boolean employeCaisseAFiniDeScannerPourUnClient) {
         EmployeCaisseAFiniDeScannerPourUnClient = employeCaisseAFiniDeScannerPourUnClient;
         // Si on set EmployeCaisseAFiniDeScannerPourUnClient à true, cela veut dire que l'employé de caisse a terminé de
-        // scanner les articles du client et restera ensuite en attente tant que le client n'a pas payé donc il n'y a
-        // pas besoin de réveiller un thread
+        // scanner les articles du client et restera ensuite en attente dans avant_prod() tant que le client n'a pas
+        // payé donc il n'y a pas besoin de réveiller un thread
         // Sinon :
         if(!employeCaisseAFiniDeScannerPourUnClient) {
             // Lorsque le client a terminé de payer, l'employé de caisse recommence à scanner. On a potentiellement

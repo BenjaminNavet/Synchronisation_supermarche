@@ -15,6 +15,8 @@ public class Entrepot {
      * @param index : index du rayon
      * @param nbStockDemande : nombre de produits désirés
      * @return nbStockAjout : le nombre de produits qu'a pu réellement prendre le chef de Rayon
+     * Pas besoin de synchronized car un seul thread manipule le stock de l'entrepôt, attention si ajout de thread
+     * en interaction avec le stock de l'entrepôt, il faudra protéger en exclusion mutuelle
      */
     public int takeProductFromEntrepot(Integer index, int nbStockDemande){
 
