@@ -124,12 +124,9 @@ public class Supermarche {
             listeClients.add(new Client(i, listeDeCourses, rayons, TPS_PARCOURS_RAYONS, chariot, caisse,accesTapisDeCaisse,accesPaiement));
         }
 
-        // On créé un deamon pour que le thread `chef_de_rayon` s'arrête une fois que tous les clients ont terminés
-        // leur exécution afin qu'il ne bloque pas le programme en tournant indéfiniment
+        // On créé un deamon pour chaque threads `chef_de_rayon` et employeCaisse afin qu'ils s'arrêtent une fois que tous les clients ont terminés
+        // leur exécution et ainsi qu'il ne bloque pas le programme en tournant indéfiniment
         chef_de_rayon.setDaemon(true);
-
-        // On créé un deamon pour que le thread `employeCaisse` s'arrête une fois que tous les clients ont terminés
-        // leur exécution afin qu'il ne bloque pas le programme en tournant indéfiniment
         employeCaisse.setDaemon(true);
 
         // Le chef de rayon est mis en route

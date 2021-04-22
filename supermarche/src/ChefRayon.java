@@ -95,6 +95,7 @@ public class ChefRayon extends Thread{
     public void run() {
 
         while (true) {
+
             // Le chef de rayon va se réapprovisionner à l'entrepôt
             recharge();
 
@@ -102,15 +103,19 @@ public class ChefRayon extends Thread{
             changeDeRayon();
 
             for (Rayon rayon : rayons) {
+
                 // Le chef de rayon réapprovisionne le rayon
                 rayon.setChefRayonSurPlace(true);
-                // Nombre d'article(s) que le chef de rayon a mis en rayon après avoir réapprovisionné le rayon
-                // (ou tenté de le faire)
+
+                // Nombre d'article(s) que le chef de rayon a mis en rayon le rayon (ou tenté de le faire)
                 int nombreDeProduitsDecharges = rayon.equilibrage(this);
-                // Nombre d'exemplaire(s) du produit dont dispose le chef de rayon après avoir réapprovisionné le rayon
+
+                // Nombre d'article(s) dont dispose le chef de rayon après avoir réapprovisionné le rayon
                 int newStockChargement = this.chargement.get(rayon.getIndex()) - nombreDeProduitsDecharges;
-                // Mise à jour du nombre d'exemplaire(s) du produit dont dispose le chef de rayon
+
+                // Mise à jour du nombre d'articles(s) du produit dans le chargement du chef de produit
                 this.chargement.put(rayon.getIndex(), newStockChargement);
+
                 // Le chef de raron passe au rayon suivant
                 changeDeRayon();
             }

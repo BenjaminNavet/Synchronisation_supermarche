@@ -75,6 +75,7 @@ public class Client extends Thread{
     }
 
     public void run() {
+
         // Le client prend un chariot
         chariot.prendreChariot(this);
 
@@ -83,41 +84,49 @@ public class Client extends Thread{
 
         // Pour chaque rayon, le client prend le nombre d'articles dont il a besoin puis passe au rayon suivant
         for (Rayon rayon : rayons) {
+
             // Quantité souhaitée par le client
             int quantiteVoulue = listeCourses.get(rayon.getIndex());
+
+            // Le client prend les produits un par un dans le rayon judqu'à atteindre la quatité voulue
             for (int j = 0; j < quantiteVoulue; j++) {
-                // Le client prend un produit dans le rayon
                 rayon.takeProduct(this);
             }
+
             // Le client change de rayon
             changeDeRayon();
         }
 
-        // Le client pose ses articles sur le tapis de caisse
+        // Le client pose ses articles sur le tapis de caisse, entrée en exclusion mutuelle
         accesTapisDeCaisse.deposeSurTapisDeCaisse(this);
 
+        //Le client commence à déposer ses articles sur le tapis
         for (Rayon rayon : rayons) {
-            // Nombre de produits pris dans le rayon d'index rayon.getIndex() à déposer
+
+            // Nombre de produits à déposer sur le tapis = nombre pris dans le rayon d'index rayon.getIndex()
             int quantiteADeposer = listeCourses.get(rayon.getIndex());
-            // Pour chaque produit que le client a dans son chariot, il cherche à le déposer sur le tapis de caisse
-            // 3 phases : avant-production (avant de déposer), production (déposer), après-production (après avoir scanné)
+
+            // Le client cherche à déposer sur le tapis de caisse chaque produit qu'il a dans son chariot,
+            // 3 phases : avant-production (avant de déposer), production (déposer), après-production (après avoir déposé)
             for (int j = 0; j < quantiteADeposer; j++) {
                 caisse.avant_prod();
                 caisse.prod(rayon.getIndex(),this);
                 caisse.apres_prod();
             }
         }
-        // Lorsque le client a fini de poser ses produits sur le tapis de caisse, il pose la marque -1 (`client suivant`)
+
+        // Lorsque le client a fini de poser ses articles sur le tapis de caisse, il pose le marqueur -1 (`client suivant`)
         caisse.avant_prod();
         caisse.prod(-1,this);
         caisse.apres_prod();
 
+        //fin de zone d'exclusion mutuelle du dépôt sur tapis de caisse
         accesTapisDeCaisse.aFiniDeDeposeSurTapisDeCaisse(this);
 
-        // Le client paye ses courses
+        // Le client paye ses courses, entrée en exclusion mutuelle
         accesPaiement.entrePaiement(this);
 
-        // Le client a fini de payer
+        // Le client a fini de payer, sortie d'exclusion mutuelle
         accesPaiement.sortPaiement(this);
 
         // Le client a fini de payer, l'employé de caisse recommence donc à scanner
