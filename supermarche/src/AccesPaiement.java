@@ -33,9 +33,13 @@ public class AccesPaiement {
      */
     public synchronized void setEmployeCaisseAFiniDeScannerPourUnClient(boolean employeCaisseAFiniDeScannerPourUnClient) {
         EmployeCaisseAFiniDeScannerPourUnClient = employeCaisseAFiniDeScannerPourUnClient;
-        //On veut réveiller le client qui est en attente de paiement de caisse, mais plusieurs threads sont possiblement
-        //en attente d'entrer dans la zone de paiement, pour être sûr de réveiller celui visé, notifyAll()
-        notifyAll();
+        if(employeCaisseAFiniDeScannerPourUnClient) {
+            // Lorsque l'employé de caisse indique qu'elle a terminé de scanner les articles du client, on veut
+            // réveiller le client qui est en attente de paiement de caisse, mais plusieurs threads sont potentiellement
+            // en attente d'entrer dans la zone de paiement. Donc pour être sûr de réveiller le premier client (de la
+            // liste d'attente de paiement) qui doit payer, on utilise notifyAll()
+            notifyAll();
+        }
     }
 
     /** Entrée en paiement d'un client lors de son passage en caisse
@@ -81,7 +85,7 @@ public class AccesPaiement {
 
         // On réinitialise le booléen EmployeCaisseAFiniDeScannerPourUnClient pour indiquer que l'employé de caisse
         // n'a pas fini de scanner les articles du client suivant (puisqu'il n'a pas commencé)
-        EmployeCaisseAFiniDeScannerPourUnClient = false;
+        setEmployeCaisseAFiniDeScannerPourUnClient(false);
 
         System.out.println("Le client n°" + client.getIndex() +" a payé et quitté la caisse.");
 

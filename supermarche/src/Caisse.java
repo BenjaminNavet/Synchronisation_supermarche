@@ -71,9 +71,17 @@ public class Caisse {
      */
     public synchronized void setEmployeCaisseAFiniDeScannerPourUnClient(boolean employeCaisseAFiniDeScannerPourUnClient) {
         EmployeCaisseAFiniDeScannerPourUnClient = employeCaisseAFiniDeScannerPourUnClient;
-        // Potentiellement plusieurs processus en attente et on souhaite surtout relancer l'activité de l'employé
-        // de caisse (recommencer à scanner)
-        notifyAll();
+        // Si on set EmployeCaisseAFiniDeScannerPourUnClient à true, cela veut dire que l'employé de caisse a terminé de
+        // scanner les articles du client et restera ensuite en attente tant que le client n'a pas payé donc il n'y a
+        // pas besoin de réveiller un thread
+        // Sinon :
+        if(!employeCaisseAFiniDeScannerPourUnClient) {
+            // Lorsque le client a terminé de payer, l'employé de caisse recommence à scanner. On a potentiellement
+            // plusieurs processus en attente mais on souhaite surtout réveiller le thread de l'employé (il recommencer
+            // à scanner). On doit donc réveiller tous les threads pour être sûr que celui de l'employé de caisse se
+            // réveille sinon on pourrait se retrouver en situtation d'interblocage
+            notifyAll();
+        }
     }
 
     /**
@@ -188,7 +196,7 @@ public class Caisse {
         } else {
             // On indique que l'employé de caisse a fini de scanner les articles du client
             finScan= true;
-            EmployeCaisseAFiniDeScannerPourUnClient = true;
+            setEmployeCaisseAFiniDeScannerPourUnClient(true);
             System.out.println("L'employé de caisse a fini de scanner le(s) article(s) d'un client.");
         }
 
