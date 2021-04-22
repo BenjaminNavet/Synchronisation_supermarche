@@ -67,25 +67,25 @@ public class Caisse {
      * modifie la valeur du booléen EmployeCaisseAFiniDeScannerPourUnClient
      * @param employeCaisseAFiniDeScannerPourUnClient : indique si l'employé de caisse a fini de scanner les articles
      *                                                  du client en attente de paiement
-     * Synchronized : entrée en exclusion mutuelle pour la variable partagée employeCaisseAFiniDeScannerPourUnClient
+     * Synchronized : exclusion mutuelle pour la variable partagée employeCaisseAFiniDeScannerPourUnClient
      */
     public synchronized void setEmployeCaisseAFiniDeScannerPourUnClient(boolean employeCaisseAFiniDeScannerPourUnClient) {
         EmployeCaisseAFiniDeScannerPourUnClient = employeCaisseAFiniDeScannerPourUnClient;
-        // Potentiellement plusieurs processus en attente mais on souhaite surtout relancer l'activité de l'employé
+        // Potentiellement plusieurs processus en attente et on souhaite surtout relancer l'activité de l'employé
         // de caisse (recommencer à scanner)
         notifyAll();
     }
 
     /**
      * Méthode d'avant production permettant de vérifier s'il est possible de déposer un article sur le tapis
-     * Synchronized : entrée en exclusion mutuelle pour la variable partagée nbvide
+     * Synchronized : exclusion mutuelle pour la variable partagée nbvide
      */
     public synchronized void avant_prod() {
         // Il y a 1 seul thread producteur sur cette instance cependant, la possibilité existe de se faire réveiller
         // par le notifyAll() de setEmployeCaisseAFiniDeScannerPourUnClient.
         // Donc dans l'hypothèse ou le consommateur était également bloqué et qu'il n'avait
         // pas encore consommé (tapis toujours plein), il faut revérifier la condition : utilisation de while nécessaire
-        if(nbvide == 0) {
+        while(nbvide == 0) {
             try {
                 System.out.println("Aucune place disponible sur le tapis.");
                 wait();
@@ -102,6 +102,7 @@ public class Caisse {
      * @param client : permet d'obtenir l'index du client qui dépose un article
      */
     public void prod(int produit, Client client) {
+
         // Le client met un temps `tps_pose_article` pour poser un article sur le tapis
         try {
             sleep(tps_pose_article);
@@ -114,22 +115,27 @@ public class Caisse {
         if(!(produit==-1)){
             System.out.println("Le client n°" + client.getIndex() +" dépose un article "+produit+ " sur le tapis." );
         }
+
         // On ajoute le produit déposé dans le buffer `tapis` à l'indice iprod
         tapis[iprod] = produit;
     }
 
     /**
-     * Méthode d'après production permettant d'actualiser le nombre de places occupées sur le tapis, de réveiller
-     * tous les threads en attente et d'actualiser la place sur laquelle l'article suivant va être déposé
-     * Synchronized : entrée en exclusion mutuelle pour la variable partagée nbplein
+     * Méthode d'après production permettant d'actualiser le nombre de places occupées sur le tapis,
+     * et d'actualiser la place sur laquelle l'article suivant va être déposé
+     * Synchronized : exclusion mutuelle pour la variable partagée nbplein
      */
     public synchronized void apres_prod() {
+
         // On actualise la valeur de nbplein en l'incrémentant de 1 pour indiquer à l'employé de caisse que le tapis
         // contient un article de plus
         nbplein++;
-        // le thread qui produit à terminé sa production, il réveille le thread consommateur si bloqué. ils sont que deux donc pas
-        //besoin de notifyAll()
+
+        // le thread qui produit à terminé sa production, il réveille le thread consommateur si bloqué.
+        // ils ne sont que deux threads sur cette instance Caisse, donc notify réveillera nécessairement
+        // le consommateur (caissier)
         notify();
+
         // Le tapis est circulaire donc l'indice de production suivant est égal à l'indice actuel + 1, modulo la
         // taille du tapis
         iprod= (iprod+1)%taille_tapis;
@@ -140,9 +146,11 @@ public class Caisse {
      * Synchronized : entrée en exclusion mutuelle pour la variable nbplein et EmployeCaisseAFiniDeScannerPourUnClient
      */
     public synchronized void avant_cons() {
-        // On a plusieurs processus en concurence donc on utilise un while.
-        // Quand ils sont réveillés, ils doivent revérifier cette condition.
-        // Tant qu'il n'y a aucune article sur le tapis ou qu'un client est entrain de payer,
+        // Il y a 1 seul thread consommateur sur cette instance cependant, la possibilité existe de se faire réveiller
+        // par le notifyAll() de setEmployeCaisseAFiniDeScannerPourUnClient.
+        // Donc dans l'hypothèse ou le producteur était également bloqué et qu'il n'avait
+        // pas encore produit (tapis toujours vide), il faut revérifier la condition : utilisation de while nécessaire
+        // Tant qu'il n'y a aucun article sur le tapis ou qu'un client est en train de payer,
         // l'employé de caisse est mis en attente
         while(nbplein == 0 || EmployeCaisseAFiniDeScannerPourUnClient) {
             try {
@@ -151,6 +159,7 @@ public class Caisse {
                 e.printStackTrace();
             }
         }
+
         // On décrémente nbplein de 1 : un article va être enlevé du tapis
         nbplein --;
     }
@@ -159,7 +168,9 @@ public class Caisse {
      * Méthode de consommation permettant de d'enlever un article du tapis
      */
     public boolean cons() {
-        // L'employé de caisse a fini de scanner les articles du client ?
+
+        // L'employé de caisse a fini de scanner les articles du client ? Après traitement ci-dessous
+        // cette information sera retournée à l'appellant de cons()
         boolean finScan;
 
         // L'employé de caisse met un temps `tps_scanne_article` pour scanner un article
@@ -192,12 +203,16 @@ public class Caisse {
      * Synchronized : entrée en exclusion mutuelle pour la variable nbvide
      */
     public synchronized void apres_cons() {
+
         // On actualise la valeur de nbvide en l'incrémentant de 1 pour indiquer au client (qui souhaite déposer un
         // article) qu'une place vient d'être libérée sur le tapis
         nbvide++;
-        // le thread qui consomme à terminé sa consommation, il réveille le thread producteur si bloqué. ils sont que deux donc pas
-        //besoin de notifyAll()
+
+        // le thread qui consomme à terminé sa consommation, il réveille le thread producteur si bloqué.
+        // ils ne sont que deux threads sur cette instance Caisse, donc notify réveillera nécessairement
+        // le producteur (client)
         notify();
+
         // Le tapis est circulaire donc l'indice de consommation suivant est égal à l'indice actuel + 1, modulo la
         // taille du tapis
         icons= (icons+1)%taille_tapis;

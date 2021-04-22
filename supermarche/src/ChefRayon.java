@@ -59,6 +59,7 @@ public class ChefRayon extends Thread{
      * Méthode permettant au chef de rayon de se réapprovisioner à l'entrepôt
      */
     public void recharge(){
+
         for (Rayon rayon : rayons) {
             // Le nombre maximum d'exemplaires que le chef de rayon peut transporter en plus de ceux qu'il a déjà
             int nbArticlesDemande = this.maxChgtParProduit - this.chargement.get(rayon.getIndex());

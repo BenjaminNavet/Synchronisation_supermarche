@@ -17,14 +17,18 @@ public class Entrepot {
      * @return nbStockAjout : le nombre de produits qu'a pu réellement prendre le chef de Rayon
      */
     public int takeProductFromEntrepot(Integer index, int nbStockDemande){
+
         // Si le stock dans l'entrepôt pour le rayon est de -1, on considère que le stock est illimité donc
         // nbStockAjout=nbStockDemande. Sinon, on détermine le nombre de produits que peut réellement prendre
         // le chef de rayon et on les retire du stock de l'entrepôt
         if(this.StockEntrepot.get(index)==-1){
             return nbStockDemande;
-        }else{
+        }
+
+        else{
             // Nombre de produits que va pouvoir prendre le chef de rayon initialisé à 0
             int nbStockAjout=0;
+
             // Tant qu'il reste des produits en stock et qu'on n'a pu satisfaire totalement la demande du chef de
             // rayon, on incrémente de 1 le nombre de produits que peut prendre le chef de rayon
             while (this.StockEntrepot.get(index) > 0 && nbStockAjout<=nbStockDemande) {

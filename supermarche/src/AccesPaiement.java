@@ -83,7 +83,9 @@ public class AccesPaiement {
 
         System.out.println("Le client n°" + client.getIndex() +" a payé et quitté la caisse.");
 
-        // On réveille tout le monde car il y a plusieurs processus en concurrence
+        // On réveille tout le monde car il y a plusieurs processus en concurrence (car éventuellement plusieurs clients
+        // dans la file d'attente paiement). On veut être sûr de réveiller le prochain client en attente de paiement
+        // et qui se trouve à l'indice 0 de la liste attentePaiement.
         notifyAll();
 
     }

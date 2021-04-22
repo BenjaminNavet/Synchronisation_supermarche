@@ -59,6 +59,7 @@ public class Rayon {
      * @param client : permet d'obtenir l'index du client qui souhaite prendre un article
      */
     public synchronized void takeProduct(Client client){
+
         // On a plusieurs processus en concurence donc on utilise un while.
         // Quand ils sont réveillés, ils doivent revérifier cette condition.
         // Tant qu'il n'y a plus de stock ou que le chef de rayon remet des articles dans le rayon, le client est
@@ -72,9 +73,11 @@ public class Rayon {
                 e.printStackTrace();
             }
         }
+
         // Modification du stock : décrémentation d'1 produit
         stock --;
         System.out.println("Le client n°"+client.getIndex()+" prend 1 article de "+getName()+".");
+
         // Un notify() suffit car les seuls threads en attente sont ceux des clients et un seul client à la fois peut
         // prendre un produit dans le rayon donc il suffit de réveiller un seul client
         notify();
@@ -86,10 +89,11 @@ public class Rayon {
      * @return nbAddArticle : le nombre d'article ajouté au rayon par le chef de rayon
      */
     public synchronized int equilibrage(ChefRayon chefRayon){
+
         // Le nombre d'articles nécessaires pour remplir intégralement le rayon
         int besoinArticle=this.stockMax-this.stock;
 
-        // Le nombre d'articles ajoutés est le minimum entre le nombre d'articles nécessaires pour remplir
+        // Le nombre d'articles REELEMENT ajoutés est le minimum entre le nombre d'articles nécessaires pour remplir
         // intégralement le rayon et le nombre de produits dont dispose le chef de rayon
         int nbAddArticle=Math.min(besoinArticle,chefRayon.getStock(getIndex()));
 
