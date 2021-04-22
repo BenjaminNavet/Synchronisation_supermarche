@@ -60,7 +60,7 @@ public class AccesPaiement {
         // Quand ils sont réveillés, ils doivent revérifier cette condition.
         // Mise en attente si l'employé de caisse n'a pas fini de scanner les articles du client ou si le
         // client n'est pas le premier sur la liste d'attente
-        while(listeAttentePaiement.get(0)!=client.getIndex()){
+        while(!EmployeCaisseAFiniDeScannerPourUnClient || listeAttentePaiement.get(0)!=client.getIndex()){
             try {
                 System.out.println("Le client n°" + client.getIndex() +" attend de pouvoir payer.");
                 wait();
