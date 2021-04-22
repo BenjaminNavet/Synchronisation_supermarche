@@ -33,12 +33,14 @@ public class AccesPaiement {
      */
     public synchronized void setEmployeCaisseAFiniDeScannerPourUnClient(boolean employeCaisseAFiniDeScannerPourUnClient) {
         EmployeCaisseAFiniDeScannerPourUnClient = employeCaisseAFiniDeScannerPourUnClient;
+        //On veut réveiller le client qui est en attente de paiement de caisse, mais plusieurs threads sont possiblement
+        //en attente d'entrer dans la zone de paiement, pour être sûr de réveiller celui visé, notifyAll()
         notifyAll();
     }
 
     /** Entrée en paiement d'un client lors de son passage en caisse
      * @param client : permet d'obtenir l'index du client qui souhaite payer
-     * Synchronized : entrée en exclusion mutuelle pour la variable EmployeCaisseAFiniDeScannerPourUnClient et
+     * Synchronized : exclusion mutuelle pour la variable EmployeCaisseAFiniDeScannerPourUnClient et
      * listeAttentePaiement
      */
     public synchronized void entrePaiement(Client client) {
@@ -70,16 +72,16 @@ public class AccesPaiement {
 
     /** Paiement d'un client lors de son passage en caisse
      * @param client : permet d'obtenir l'index du client qui souhaite payer
-     * Synchronized : entrée en exclusion mutuelle pour pour le réveil des processus en attente
+     * Synchronized : exclusion mutuelle pour pour le réveil des processus en attente
      */
     public synchronized void sortPaiement(Client client) {
 
-        // On réinitialise le booléen EmployeCaisseAFiniDeScannerPourUnClient pour indiquer que l'employé de caisse
-        // n'a pas fini de scanner les articles du client suivant (puisqu'il n'a pas commencé)
-        setEmployeCaisseAFiniDeScannerPourUnClient(false);
-
         // On supprime le numéro du client de la liste d'attente de paiement car il a payé
         listeAttentePaiement.remove(0);
+
+        // On réinitialise le booléen EmployeCaisseAFiniDeScannerPourUnClient pour indiquer que l'employé de caisse
+        // n'a pas fini de scanner les articles du client suivant (puisqu'il n'a pas commencé)
+        EmployeCaisseAFiniDeScannerPourUnClient = false;
 
         System.out.println("Le client n°" + client.getIndex() +" a payé et quitté la caisse.");
 
