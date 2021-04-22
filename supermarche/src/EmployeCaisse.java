@@ -25,10 +25,11 @@ public class EmployeCaisse extends Thread{
 
             caisse.avant_cons();
 
-            // la consommation d'une case dans le tapis return true seulement si -1 est trouvé (scan fini)
+            // La consommation d'une case dans le tapis return true seulement si -1 est trouvé (scan fini)
             boolean enMouvement=caisse.cons();
 
-            // l'information "fini de scanner" est transmise à la zone de paiement pour libération du client
+            // L'information "fini de scanner" est transmise à la zone de paiement, si le scan est fini, le premier
+            // client en attente de paiement sera réveillé
             if(enMouvement) {
                 accesPaiement.setEmployeCaisseAFiniDeScannerPourUnClient(enMouvement);
             }
