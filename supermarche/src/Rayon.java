@@ -20,11 +20,6 @@ public class Rayon {
      */
     private final int index;
 
-    /**
-     * chef de rayon sur place
-     */
-    private volatile boolean ChefRayonSurPlace = false;
-
     public Rayon(int index, String nom, int stockMax, int stock){
         this.index=index;
         this.nom=nom;
@@ -46,15 +41,6 @@ public class Rayon {
         return this.index;
     }
 
-    /**
-     * Modifie la valeur du booléen chefRayonSurPlace
-     * @param chefRayonSurPlace : indique si le chef de rayon est sur place
-     */
-    public void setChefRayonSurPlace(boolean chefRayonSurPlace) {
-        ChefRayonSurPlace = chefRayonSurPlace;
-    }
-
-
     /** Méthode permettant à un client de prendre un produit dans le rayon
      * @param client : permet d'obtenir l'index du client qui souhaite prendre un article
      * synchronized : ici on ne veut pas que le chef de rayon manipule le stock du rayon pendant qu'un client
@@ -68,7 +54,7 @@ public class Rayon {
         // Quand ils sont réveillés, ils doivent revérifier cette condition.
         // Tant qu'il n'y a plus de stock ou que le chef de rayon remet des articles dans le rayon, le client est
         // mis en attente
-        while(stock==0 || ChefRayonSurPlace){
+        while(stock==0){
             try {
                 System.out.println("Le client n°" + client.getIndex() + " ne peut plus prendre de " + getName() +
                         ", mise en attente sur Rayon " + getIndex() + "." );
@@ -109,9 +95,6 @@ public class Rayon {
             stock ++;
         }
         System.out.println("Le chef de rayon remet "+nbAddArticle+" "+getName()+"(s) dans le rayon "+getIndex()+".");
-
-        // On indique que le chef de rayon n'est plus sur place, les clients pourront donc de nouveau accèder au rayon
-        setChefRayonSurPlace(false);
 
         // Un notify() suffit car les seuls threads en attente sont ceux des clients et un seul client à la fois peut
         // prendre un produit dans le rayon donc il suffit de réveiller un seul client

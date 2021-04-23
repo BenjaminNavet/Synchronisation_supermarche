@@ -105,9 +105,6 @@ public class ChefRayon extends Thread{
 
             for (Rayon rayon : rayons) {
 
-                // Le chef de rayon réapprovisionne le rayon
-                rayon.setChefRayonSurPlace(true);
-
                 // Nombre d'article(s) que le chef de rayon a mis en rayon le rayon (ou tenté de le faire)
                 int nombreDeProduitsDecharges = rayon.equilibrage(this);
 
